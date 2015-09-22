@@ -1,0 +1,44 @@
+{
+  "name": "jsonwebtoken-js",
+  "version": "0.1.0",
+  "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blockstack/jsonwebtoken-js.git"
+  },
+  "keywords": [
+    "jwt",
+    "json",
+    "web",
+    "token",
+    "encode",
+    "decode",
+    "verify",
+    "ecdsa",
+    "secp256k1",
+    "ec",
+    "elliptic",
+    "curve",
+    "signature",
+    "sign"
+  ],
+  "author": "Halfmoon Labs, Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/blockstack/jsonwebtoken-js/issues"
+  },
+  "homepage": "https://github.com/blockstack/jsonwebtoken-js#readme",
+  "devDependencies": {
+    "tape": "^4.2.0"
+  },
+  "dependencies": {
+    "base64url": "^1.0.4",
+    "crypto": "0.0.3",
+    "ecdsa-sig-formatter": "^1.0.2",
+    "elliptic": "^5.1.0"
+  }
+}
