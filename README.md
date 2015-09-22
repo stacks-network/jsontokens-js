@@ -5,7 +5,7 @@ node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)
 ### Installation
 
 ```
-npm install
+npm install jwt-js
 ```
 
 ### Getting Started
