@@ -1,4 +1,9 @@
-# jsonwebtoken-js
+# jwt-js
+
+[![npm](https://img.shields.io/npm/l/jwt-js.svg)](https://www.npmjs.com/package/jwt-js)
+[![Slack](http://slack.blockstack.org/badge.svg)](http://slack.blockstack.org/)
+
+[![](https://nodei.co/npm/jwt-js.png)](https://www.npmjs.com/package/jwt-js)
 
 node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)
 
