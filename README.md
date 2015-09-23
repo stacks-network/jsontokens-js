@@ -1,5 +1,6 @@
 # jwt-js
 
+[![CircleCI](https://img.shields.io/circleci/project/blockstack/jwt-js.svg)](https://circleci.com/gh/blockstack/jwt-js)
 [![npm](https://img.shields.io/npm/l/jwt-js.svg)](https://www.npmjs.com/package/jwt-js)
 [![Slack](http://slack.blockstack.org/badge.svg)](http://slack.blockstack.org/)
 
