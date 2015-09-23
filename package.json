@@ -1,6 +1,6 @@
 {
   "name": "jwt-js",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "index.js",
   "scripts": {
@@ -40,5 +40,10 @@
     "crypto": "0.0.3",
     "ecdsa-sig-formatter": "^1.0.2",
     "elliptic": "^5.1.0"
-  }
+  },
+  "files": [
+    "lib/",
+    "*.js",
+    "README.md"
+  ]
 }
