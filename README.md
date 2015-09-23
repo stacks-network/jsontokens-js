@@ -1,4 +1,4 @@
-# jwt-js
+# JSON Web Token JS
 
 [![CircleCI](https://img.shields.io/circleci/project/blockstack/jwt-js.svg)](https://circleci.com/gh/blockstack/jwt-js)
 [![npm](https://img.shields.io/npm/l/jwt-js.svg)](https://www.npmjs.com/package/jwt-js)
