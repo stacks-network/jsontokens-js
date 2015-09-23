@@ -24,7 +24,7 @@ var rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d2
 test('testEncode', function(t) {
     t.plan(3)
 
-    var encodedToken = tokenizer.encode(sampleDecodedToken.payload, rawPrivateKey)
+    var encodedToken = tokenizer.sign(sampleDecodedToken.payload, rawPrivateKey)
     t.ok(encodedToken, 'token should have been created')
     t.equal(typeof encodedToken, 'string', 'token should be a string')
     

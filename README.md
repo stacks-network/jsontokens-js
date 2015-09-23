@@ -5,7 +5,7 @@
 
 [![](https://nodei.co/npm/jwt-js.png)](https://www.npmjs.com/package/jwt-js)
 
-node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)
+node.js library for signing, decoding, and verifying JSON Web Tokens (JWTs)
 
 ### Installation
 
@@ -28,11 +28,11 @@ Create a tokenizer object:
 var tokenizer = new Tokenizer('secp256k1')
 ```
 
-### Encoding Tokens
+### Signing Tokens
 
 ```js
 var tokenPayload = {"issuedAt": "1440713414.85", "challenge": "7cd9ed5e-bb0e-49ea-a323-f28bde3a0549", "issuer": {"publicKey": "03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479", "chainPath": "bd62885ec3f0e3838043115f4ce25eedd22cc86711803fb0c19601eeef185e39", "publicKeychain": "xpub661MyMwAqRbcFQVrQr4Q4kPjaP4JjWaf39fBVKjPdK6oGBayE46GAmKzo5UDPQdLSM9DufZiP8eauy56XNuHicBySvZp7J5wsyQVpi2axzZ", "blockchainid": "ryan"}},
-    encodedToken = tokenizer.encode(tokenPayload, rawPrivateKey)
+    encodedToken = tokenizer.sign(tokenPayload, rawPrivateKey)
 ```
 
 ##### Example output:
