@@ -1,7 +1,6 @@
 # JSON Web Token JS
 
-[![CircleCI](https://img.shields.io/circleci/project/blockstack/jwt-js.svg)](https://circleci.com/gh/blockstack/jwt-js)
-[![npm](https://img.shields.io/npm/l/jwt-js.svg)](https://www.npmjs.com/package/jwt-js)
+[![CircleCI](https://circleci.com/gh/blockstack/jwt-js.png?style=shield&circle-token=:circle-token)](https://circleci.com/gh/blockstack/jwt-js)
 [![Slack](http://slack.blockstack.org/badge.svg)](http://slack.blockstack.org/)
 
 [![](https://nodei.co/npm/jwt-js.png)](https://www.npmjs.com/package/jwt-js)
@@ -20,7 +19,7 @@ Create a tokenizer object:
 
 ```js
 var Tokenizer = require('jwt-js').Tokenizer,
-    tokenizer = new Tokenizer('secp256k1')
+    tokenizer = new Tokenizer('ES256k')
 ```
 
 Initialize private and public keys to do the signing and verification:
