@@ -21,7 +21,7 @@ var rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d2
       signature: 'oO7ROPKq3T3X0azAXzHsf6ub6CYy5nUUFDoy8MS22B3TlYisqsBrRtzWIQcSYiFXLytrXwAdt6vjehj3OFioDQ'
     }
 
-test('testEncode', function(t) {
+test('testSign', function(t) {
     t.plan(4)
 
     var encodedToken = tokenizer.sign(sampleDecodedToken.payload, rawPrivateKey)

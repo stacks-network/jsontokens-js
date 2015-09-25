@@ -1,6 +1,6 @@
 {
   "name": "jwt-js",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "index.js",
   "scripts": {
