@@ -2,5 +2,6 @@
 
 module.exports = {
     Tokenizer: require('./lib/tokenizer'),
-    decodeToken: require('./lib/decode')
+    decodeToken: require('./lib/decode'),
+    MissingParametersError: require('./lib/errors').MissingParametersError
 }

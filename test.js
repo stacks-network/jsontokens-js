@@ -1,7 +1,8 @@
 'use strict'
 
 var test = require('tape'),
-    Tokenizer = require('./index').Tokenizer
+    Tokenizer = require('./index').Tokenizer,
+    MissingParametersError = require('./index').MissingParametersError
 
 var tokenizer = new Tokenizer('ES256k')
 
@@ -22,7 +23,7 @@ var rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d2
     }
 
 test('testSign', function(t) {
-    t.plan(4)
+    t.plan(5)
 
     var encodedToken = tokenizer.sign(sampleDecodedToken.payload, rawPrivateKey)
     t.ok(encodedToken, 'token should have been created')
@@ -31,6 +32,12 @@ test('testSign', function(t) {
     var decodedToken = tokenizer.decode(encodedToken)
     t.equal(JSON.stringify(decodedToken.header), JSON.stringify(sampleDecodedToken.header), 'decodedToken header should match the reference header')
     t.equal(JSON.stringify(decodedToken.payload), JSON.stringify(sampleDecodedToken.payload), 'decodedToken payload should match the reference payload')
+
+    try {
+      encodedToken = tokenizer.sign(sampleDecodedToken.payload)
+    } catch(err) {
+      t.equal(err.name, 'MissingParametersError', 'token signing without a private key should throw an error')
+    }
 })
 
 test('testDecode', function(t) {
@@ -42,8 +49,14 @@ test('testDecode', function(t) {
 })
 
 test('testVerify', function(t) {
-    t.plan(1)
+    t.plan(2)
 
     var tokenVerified = tokenizer.verify(sampleToken, rawPublicKey)
     t.equal(tokenVerified, true, 'token should have been verified')
+
+    try {
+      tokenVerified = tokenizer.verify(sampleToken)
+    } catch(err) {
+      t.equal(err.name, 'MissingParametersError', 'token verification without a public key should throw an error')
+    }
 })
