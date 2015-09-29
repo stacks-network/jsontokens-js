@@ -65,13 +65,19 @@ test('testVerify', function(t) {
 })
 
 test('tokenSigner', function(t) {
-    t.plan(3)
+    t.plan(5)
 
     var tokenSigner = new TokenSigner('ES256k', rawPrivateKey)
     t.ok(tokenSigner, 'token signer should have been created')
+
     var token = tokenSigner.sign(sampleDecodedToken.payload)
     t.ok(token, 'token should have been created')
     t.equal(typeof token, 'string', 'token should be a string')
+    
+    var decodedToken = decodeToken(token)
+    t.equal(JSON.stringify(decodedToken.header), JSON.stringify(sampleDecodedToken.header), 'decodedToken header should match the reference header')
+    t.equal(JSON.stringify(decodedToken.payload), JSON.stringify(sampleDecodedToken.payload), 'decodedToken payload should match the reference payload')
+
 })
 
 test('tokenVerifier', function(t) {
@@ -79,6 +85,7 @@ test('tokenVerifier', function(t) {
 
     var tokenVerifier = new TokenVerifier('ES256k', rawPublicKey)
     t.ok(tokenVerifier, 'token verifier should have been created')
+    
     var verified = tokenVerifier.verify(sampleToken)
     t.equal(verified, true, 'token should have been verified')
 })
