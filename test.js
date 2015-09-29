@@ -67,7 +67,7 @@ test('testVerify', function(t) {
 test('tokenSigner', function(t) {
     t.plan(3)
 
-    var tokenSigner = new TokenSigner('es256k', rawPrivateKey)
+    var tokenSigner = new TokenSigner('ES256k', rawPrivateKey)
     t.ok(tokenSigner, 'token signer should have been created')
     var token = tokenSigner.sign(sampleDecodedToken.payload)
     t.ok(token, 'token should have been created')
@@ -77,7 +77,7 @@ test('tokenSigner', function(t) {
 test('tokenVerifier', function(t) {
     t.plan(2)
 
-    var tokenVerifier = new TokenVerifier('es256k', rawPublicKey)
+    var tokenVerifier = new TokenVerifier('ES256k', rawPublicKey)
     t.ok(tokenVerifier, 'token verifier should have been created')
     var verified = tokenVerifier.verify(sampleToken)
     t.equal(verified, true, 'token should have been verified')
