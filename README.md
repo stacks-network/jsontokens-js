@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/blockstack/jwt-js.png?style=shield&circle-token=:circle-token)](https://circleci.com/gh/blockstack/jwt-js)
 [![Slack](http://slack.blockstack.org/badge.svg)](http://slack.blockstack.org/)
 
-[![](https://nodei.co/npm/jwt-js.png)](https://www.npmjs.com/package/jwt-js)
+[![](https://nodei.co/npm/jwt-js.png?downloads=true)](https://www.npmjs.com/package/jwt-js)
 
 node.js library for signing, decoding, and verifying JSON Web Tokens (JWTs)
 
