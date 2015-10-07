@@ -5,7 +5,7 @@ var test = require('tape'),
     TokenVerifier = require('./index').TokenVerifier,
     decodeToken = require('./index').decodeToken,
     MissingParametersError = require('./index').MissingParametersError,
-    ES256kClient = require('./index').ES256kClient
+    SECP256K1Client = require('./index').SECP256K1Client
 
 var rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f',
     rawPublicKey = '03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479',
@@ -56,10 +56,10 @@ test('decodeToken', function(t) {
     t.equal(JSON.stringify(decodedToken.payload), JSON.stringify(sampleDecodedToken.payload), 'decodedToken payload should match the reference payload')
 })
 
-test('ES256kClient', function(t) {
+test('SECP256K1Client', function(t) {
     t.plan(2)
 
-    var derivedRawPublicKey = ES256kClient.privateKeyToPublicKey(rawPrivateKey)
+    var derivedRawPublicKey = SECP256K1Client.privateKeyToPublicKey(rawPrivateKey)
     t.ok(derivedRawPublicKey, 'raw public key should have been derived')
     t.equal(derivedRawPublicKey, rawPublicKey, 'derived raw public key should match the reference value')
 })

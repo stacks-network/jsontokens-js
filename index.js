@@ -5,5 +5,5 @@ module.exports = {
     TokenVerifier: require('./lib/verifier'),
     decodeToken: require('./lib/decode'),
     MissingParametersError: require('./lib/errors').MissingParametersError,
-    ES256kClient: require('./lib/crypto-clients').es256k
+    SECP256K1Client: require('./lib/signing-algorithms/secp256k1')
 }
