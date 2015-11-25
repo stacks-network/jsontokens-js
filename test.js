@@ -11,7 +11,7 @@ var rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d2
     rawPublicKey = '03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479',
     sampleToken = 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZWRBdCI6IjE0NDA3MTM0MTQuODUiLCJjaGFsbGVuZ2UiOiI3Y2Q5ZWQ1ZS1iYjBlLTQ5ZWEtYTMyMy1mMjhiZGUzYTA1NDkiLCJpc3N1ZXIiOnsicHVibGljS2V5IjoiMDNmZGQ1N2FkZWMzZDQzOGVhMjM3ZmU0NmIzM2VlMWUwMTZlZGE2YjU4NWMzZTI3ZWE2NjY4NmMyZWE1MzU4NDc5IiwiY2hhaW5QYXRoIjoiYmQ2Mjg4NWVjM2YwZTM4MzgwNDMxMTVmNGNlMjVlZWRkMjJjYzg2NzExODAzZmIwYzE5NjAxZWVlZjE4NWUzOSIsInB1YmxpY0tleWNoYWluIjoieHB1YjY2MU15TXdBcVJiY0ZRVnJRcjRRNGtQamFQNEpqV2FmMzlmQlZLalBkSzZvR0JheUU0NkdBbUt6bzVVRFBRZExTTTlEdWZaaVA4ZWF1eTU2WE51SGljQnlTdlpwN0o1d3N5UVZwaTJheHpaIiwiYmxvY2tjaGFpbmlkIjoicnlhbiJ9fQ.oO7ROPKq3T3X0azAXzHsf6ub6CYy5nUUFDoy8MS22B3TlYisqsBrRtzWIQcSYiFXLytrXwAdt6vjehj3OFioDQ',
     sampleDecodedToken = {
-      header: { typ: 'JWT', alg: 'ES256' },
+      header: { typ: 'JWT', alg: 'ES256K' },
       payload: 
        { issuedAt: '1440713414.85',
          challenge: '7cd9ed5e-bb0e-49ea-a323-f28bde3a0549',
@@ -26,7 +26,7 @@ var rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d2
 test('TokenSigner', function(t) {
     t.plan(5)
 
-    var tokenSigner = new TokenSigner('ES256k', rawPrivateKey)
+    var tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
     t.ok(tokenSigner, 'token signer should have been created')
 
     var token = tokenSigner.sign(sampleDecodedToken.payload)
@@ -41,7 +41,7 @@ test('TokenSigner', function(t) {
 test('TokenVerifier', function(t) {
     t.plan(2)
 
-    var tokenVerifier = new TokenVerifier('ES256k', rawPublicKey)
+    var tokenVerifier = new TokenVerifier('ES256K', rawPublicKey)
     t.ok(tokenVerifier, 'token verifier should have been created')
     
     var verified = tokenVerifier.verify(sampleToken)
