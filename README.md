@@ -1,6 +1,6 @@
-# JSON Web Token JS
+# Blockstack Tokens JS
 
-[![CircleCI](https://circleci.com/gh/blockstack/blockstack-tokens-js.png?style=shield&circle-token=:circle-token)](https://circleci.com/gh/blockstack/blockstack-tokens-js)
+[![CircleCI](https://img.shields.io/circleci/project/blockstack/blockstack-tokens-js/master.svg)](https://circleci.com/gh/blockstack/blockstack-tokens-js/tree/master)
 [![npm](https://img.shields.io/npm/l/blockstack-tokens.svg)](https://www.npmjs.com/package/blockstack-tokens)
 [![npm](https://img.shields.io/npm/v/blockstack-tokens.svg)](https://www.npmjs.com/package/blockstack-tokens)
 [![npm](https://img.shields.io/npm/dm/blockstack-tokens.svg)](https://www.npmjs.com/package/blockstack-tokens)
