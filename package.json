@@ -1,5 +1,5 @@
 {
-  "name": "jwt-js",
+  "name": "blockstack-tokens",
   "version": "0.5.0",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/blockstack/jsonwebtoken-js.git"
+    "url": "git+https://github.com/blockstack/blockstack-tokens-js.git"
   },
   "keywords": [
     "jwt",
@@ -29,9 +29,9 @@
   "author": "Halfmoon Labs, Inc.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/blockstack/jsonwebtoken-js/issues"
+    "url": "https://github.com/blockstack/blockstack-tokens-js/issues"
   },
-  "homepage": "https://github.com/blockstack/jsonwebtoken-js#readme",
+  "homepage": "https://github.com/blockstack/blockstack-tokens-js#readme",
   "devDependencies": {
     "tape": "^4.2.0"
   },
