@@ -1,6 +1,6 @@
 {
   "name": "jsontokens",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
   "scripts": {
@@ -43,7 +43,7 @@
     "brfs": "^1.4.3",
     "browserify": "^13.1.1",
     "browserify-test": "^2.2.0",
-    "phantomjs": "^2.1.7",
+    "phantomjs-prebuilt": "^2.1.13",
     "tape": "^4.2.0",
     "tape-run": "^2.1.4"
   },
