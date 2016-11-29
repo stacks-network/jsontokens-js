@@ -43,7 +43,7 @@
     "brfs": "^1.4.3",
     "browserify": "^13.1.1",
     "browserify-test": "^2.2.0",
-    "phantomjs": "^2.1.7",
+    "phantomjs-prebuilt": "^2.1.13",
     "tape": "^4.2.0",
     "tape-run": "^2.1.4"
   },
