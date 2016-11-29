@@ -1,14 +1,17 @@
 {
-  "name": "blockstack-tokens",
-  "version": "0.5.1",
+  "name": "jsontokens",
+  "version": "0.6.0",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "node test.js"
+    "compile": "babel --presets es2015 src -d lib",
+    "test": "npm run compile; node lib/unitTests.js",
+    "prepublish": "npm run compile",
+    "test-browserify": "npm run compile; node lib/testBrowserify.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/blockstack/blockstack-tokens-js.git"
+    "url": "git+https://github.com/blockstack/jsontokens-js.git"
   },
   "keywords": [
     "jwt",
@@ -26,24 +29,27 @@
     "signature",
     "sign"
   ],
-  "author": "Halfmoon Labs, Inc.",
+  "author": "Blockstack Inc.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/blockstack/blockstack-tokens-js/issues"
+    "url": "https://github.com/blockstack/jsontokens-js/issues"
   },
-  "homepage": "https://github.com/blockstack/blockstack-tokens-js#readme",
+  "homepage": "https://github.com/blockstack/jsontokens-js#readme",
   "devDependencies": {
-    "tape": "^4.2.0"
+    "babel-cli": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babelify": "^7.3.0",
+    "brfs": "^1.4.3",
+    "browserify": "^13.1.1",
+    "browserify-test": "^2.2.0",
+    "phantomjs": "^2.1.7",
+    "tape": "^4.2.0",
+    "tape-run": "^2.1.4"
   },
   "dependencies": {
     "base64url": "^2.0.0",
     "crypto": "0.0.3",
     "ecdsa-sig-formatter": "^1.0.8",
     "elliptic": "^6.3.2"
-  },
-  "files": [
-    "lib/",
-    "*.js",
-    "README.md"
-  ]
+  }
 }
