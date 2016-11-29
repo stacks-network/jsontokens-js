@@ -5,9 +5,10 @@
   "main": "lib/index.js",
   "scripts": {
     "compile": "babel --presets es2015 src -d lib",
-    "test": "npm run compile; node lib/unitTests.js",
+    "test": "npm run compile; node lib/test/unitTests.js",
     "prepublish": "npm run compile",
-    "test-browserify": "npm run compile; node lib/testBrowserify.js"
+    "test-browserify": "npm run compile; node lib/test/testBrowserify.js",
+    "browserify-app": "npm run compile; browserify lib/test/app.js -o lib/test/bundle.js"
   },
   "repository": {
     "type": "git",
