@@ -1,6 +1,6 @@
 {
   "name": "jsontokens",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
   "scripts": {
