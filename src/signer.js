@@ -4,6 +4,24 @@ import base64url from 'base64url'
 import { cryptoClients } from './cryptoClients'
 import decodeToken from './decode'
 
+export function createUnsignedToken(header, payload) {
+    let tokenParts = []
+
+    // add in the header
+    const encodedHeader = base64url.encode(JSON.stringify(header))
+    tokenParts.push(encodedHeader)
+
+    // add in the payload
+    const encodedPayload = base64url.encode(JSON.stringify(payload))
+    tokenParts.push(encodedPayload)
+
+    // prepare the message
+    const signingInput = tokenParts.join('.')
+
+    // return the signing input
+    return signingInput
+}
+
 export class TokenSigner {
     constructor(signingAlgorithm, rawPrivateKey) {
         if (!(signingAlgorithm && rawPrivateKey)) {
@@ -27,25 +45,15 @@ export class TokenSigner {
     }
 
     sign(payload) {
-        let tokenParts = []
-
-        // add in the header
-        const encodedHeader = base64url.encode(JSON.stringify(this.header()))
-        tokenParts.push(encodedHeader)
-
-        // add in the payload
-        const encodedPayload = base64url.encode(JSON.stringify(payload))
-        tokenParts.push(encodedPayload)
-
-        // prepare the message
-        const signingInput = tokenParts.join('.')
+        // prepare the message to be signed
+        const signingInput = createUnsignedToken(this.header(), payload)
         const signingInputHash = this.cryptoClient.createHash(signingInput)
 
         // sign the message and add in the signature
-        const signature = this.cryptoClient.signHash(signingInputHash, this.rawPrivateKey)
-        tokenParts.push(signature)
-
+        const signature = this.cryptoClient.signHash(
+            signingInputHash, this.rawPrivateKey)
+        
         // return the token
-        return tokenParts.join('.')
+        return [signingInput, signature].join('.')
     }
 }
