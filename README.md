@@ -1,9 +1,9 @@
-# Blockstack Tokens JS
+# JSON Tokens JS
 
-[![CircleCI](https://img.shields.io/circleci/project/blockstack/blockstack-tokens-js/master.svg)](https://circleci.com/gh/blockstack/blockstack-tokens-js/tree/master)
-[![npm](https://img.shields.io/npm/l/blockstack-tokens.svg)](https://www.npmjs.com/package/blockstack-tokens)
-[![npm](https://img.shields.io/npm/v/blockstack-tokens.svg)](https://www.npmjs.com/package/blockstack-tokens)
-[![npm](https://img.shields.io/npm/dm/blockstack-tokens.svg)](https://www.npmjs.com/package/blockstack-tokens)
+[![CircleCI](https://img.shields.io/circleci/project/blockstack/jsontokens-js/master.svg)](https://circleci.com/gh/blockstack/jsontokens-js/tree/master)
+[![npm](https://img.shields.io/npm/l/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
+[![npm](https://img.shields.io/npm/v/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
+[![npm](https://img.shields.io/npm/dm/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
 [![Slack](http://slack.blockstack.org/badge.svg)](http://slack.blockstack.org/)
 
 node.js library for signing, decoding, and verifying JSON Web Tokens (JWTs)
@@ -11,16 +11,17 @@ node.js library for signing, decoding, and verifying JSON Web Tokens (JWTs)
 ### Installation
 
 ```
-npm install blockstack-tokens
+npm install jsontokens
 ```
 
 ### Signing Tokens
 
 ```js
-var TokenSigner = require('blockstack-tokens').TokenSigner,
-    rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f',
-    tokenPayload = {"issuedAt": "1440713414.85", "challenge": "7cd9ed5e-bb0e-49ea-a323-f28bde3a0549", "issuer": {"publicKey": "03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479", "chainPath": "bd62885ec3f0e3838043115f4ce25eedd22cc86711803fb0c19601eeef185e39", "publicKeychain": "xpub661MyMwAqRbcFQVrQr4Q4kPjaP4JjWaf39fBVKjPdK6oGBayE46GAmKzo5UDPQdLSM9DufZiP8eauy56XNuHicBySvZp7J5wsyQVpi2axzZ", "blockchainid": "ryan"}},
-    token = new TokenSigner('ES256k', rawPrivateKey).sign(tokenPayload)
+import { TokenSigner } from 'jsontokens'
+
+const rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
+const tokenPayload = {"issuedAt": "1440713414.85", "challenge": "7cd9ed5e-bb0e-49ea-a323-f28bde3a0549", "issuer": {"publicKey": "03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479", "chainPath": "bd62885ec3f0e3838043115f4ce25eedd22cc86711803fb0c19601eeef185e39", "publicKeychain": "xpub661MyMwAqRbcFQVrQr4Q4kPjaP4JjWaf39fBVKjPdK6oGBayE46GAmKzo5UDPQdLSM9DufZiP8eauy56XNuHicBySvZp7J5wsyQVpi2axzZ", "blockchainid": "ryan"}}
+const token = new TokenSigner('ES256k', rawPrivateKey).sign(tokenPayload)
 ```
 
 ##### Example output:
@@ -33,8 +34,8 @@ eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZWRBdCI6IjE0NDA3MTM0MTQuODUiLCJjaGF
 ### Decoding Tokens
 
 ```js
-var decodeToken = require('blockstack-tokens').decodeToken,
-    tokenData = decodeToken(token)
+import { decodeToken } = from 'jsontokens'
+const tokenData = decodeToken(token)
 ```
 
 ##### Example output:
@@ -56,9 +57,9 @@ var decodeToken = require('blockstack-tokens').decodeToken,
 ### Verifying Tokens
 
 ```js
-var TokenVerifier = require('blockstack-tokens').TokenVerifier,
-    rawPublicKey = '03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479',
-    verified = new TokenVerifier('ES256k', rawPublicKey).verify(token)
+import { TokenVerifier } from 'jsontokens'
+const rawPublicKey = '03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479'
+const verified = new TokenVerifier('ES256k', rawPublicKey).verify(token)
 ```
 
 ##### Example output:
