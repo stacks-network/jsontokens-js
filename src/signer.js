@@ -4,7 +4,7 @@ import base64url from 'base64url'
 import { cryptoClients } from './cryptoClients'
 import decodeToken from './decode'
 
-export function createUnsignedToken(header, payload) {
+export function createUnsecuredToken(payload, header={typ: 'JWT', alg: 'none'}) {
     let tokenParts = []
 
     // add in the header
@@ -16,7 +16,7 @@ export function createUnsignedToken(header, payload) {
     tokenParts.push(encodedPayload)
 
     // prepare the message
-    const signingInput = tokenParts.join('.')
+    const signingInput = tokenParts.join('.') + '.'
 
     // return the signing input
     return signingInput
@@ -46,7 +46,7 @@ export class TokenSigner {
 
     sign(payload) {
         // prepare the message to be signed
-        const signingInput = createUnsignedToken(this.header(), payload)
+        const signingInput = createUnsecuredToken(payload, this.header())
         const signingInputHash = this.cryptoClient.createHash(signingInput)
 
         // sign the message and add in the signature
