@@ -1,9 +1,10 @@
 'use strict'
 
 import test from 'tape'
+import base64url from 'base64url'
 
 import {
-    TokenSigner, TokenVerifier, decodeToken, createUnsignedToken,
+    TokenSigner, TokenVerifier, decodeToken, createUnsecuredToken,
     MissingParametersError, SECP256K1Client
 } from '../index'
 
@@ -46,15 +47,17 @@ test('TokenSigner', (t) => {
     )
 })
 
-test('createUnsignedToken', (t) => {
+test('createUnsecuredToken', (t) => {
     t.plan(3)
 
-    const unsignedToken = createUnsignedToken(
-        sampleDecodedToken.header, sampleDecodedToken.payload) + '.0'
-    t.ok(unsignedToken, 'unsigned token should have been created')
-    t.equal(unsignedToken, sampleToken.split('.').slice(0,2).join('.') + '.0', 'unsigned token should equal reference')
+    const unsecuredToken = createUnsecuredToken(
+        sampleDecodedToken.payload)
+    t.ok(unsecuredToken, 'unsecured token should have been created')
+    t.equal(unsecuredToken,
+        base64url.encode(JSON.stringify({typ: 'JWT', alg: 'none'})) + '.' + sampleToken.split('.')[1] + '.',
+        'unsigned token should equal reference')
 
-    const decodedToken = decodeToken(unsignedToken)
+    const decodedToken = decodeToken(unsecuredToken)
     t.ok(decodedToken, 'token should have been decoded')
 })
 
