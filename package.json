@@ -1,14 +1,14 @@
 {
   "name": "jsontokens",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
   "scripts": {
     "compile": "babel --presets es2015 src -d lib",
     "test": "npm run compile; node lib/test/unitTests.js",
     "prepublish": "npm run compile",
-    "test-browserify": "npm run compile; node lib/test/testBrowserify.js",
-    "browserify-app": "npm run compile; browserify lib/test/app.js -o lib/test/bundle.js"
+    "browserify-test": "npm run compile; node lib/test/browserifyTests.js",
+    "browserify-app": "npm run compile; browserify lib/test/browserifyApp.js -o lib/test/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -48,9 +48,9 @@
     "tape-run": "^2.1.4"
   },
   "dependencies": {
+    "base64-url": "^1.3.3",
     "base64url": "^2.0.0",
     "crypto": "0.0.3",
-    "ecdsa-sig-formatter": "^1.0.8",
     "elliptic": "^6.3.2"
   }
 }

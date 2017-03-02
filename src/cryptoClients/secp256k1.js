@@ -2,7 +2,7 @@
 
 import { ec as EC } from 'elliptic'
 import { createHash } from 'crypto'
-import sigFormatter from 'ecdsa-sig-formatter'
+import { derToJose, joseToDer } from './ecdsaSigFormatter'
 import { MissingParametersError } from '../errors'
 
 export class SECP256K1Client {
@@ -50,14 +50,14 @@ export class SECP256K1Client {
     // calculate the signature
     const signatureObject = privateKeyObject.sign(signingInputHash)
     const derSignature = new Buffer(signatureObject.toDER())
-    const joseSignature = sigFormatter.derToJose(derSignature, 'ES256')
+    const joseSignature = derToJose(derSignature, 'ES256')
     // return the JOSE-formatted signature
     return joseSignature
   }
   
   static loadSignature(joseSignature) {
     // create and return the DER-formatted signature buffer
-    return sigFormatter.joseToDer(joseSignature, 'ES256')
+    return joseToDer(joseSignature, 'ES256')
   }
 
   static verifyHash(signingInputHash, derSignatureBuffer, rawPublicKey) {
