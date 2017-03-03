@@ -1,7 +1,10 @@
 'use strict';
 
-import { escape as base64UrlEscape } from 'base64-url'
-//var Buffer = require('safe-buffer').Buffer;
+function base64UrlEscape(str) {
+  return str.replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+}
 
 function getParamSize(keySize) {
   return ((keySize / 8) | 0) + (keySize % 8 === 0 ? 0 : 1)

@@ -1,6 +1,6 @@
 {
   "name": "jsontokens",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
   "scripts": {
@@ -48,7 +48,6 @@
     "tape-run": "^2.1.4"
   },
   "dependencies": {
-    "base64-url": "^1.3.3",
     "base64url": "^2.0.0",
     "crypto": "0.0.3",
     "elliptic": "^6.3.2"
