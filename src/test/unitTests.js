@@ -25,7 +25,7 @@ const sampleDecodedToken = {
     }
 
 test('TokenSigner', (t) => {
-    t.plan(5)
+    t.plan(6)
 
     const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
     t.ok(tokenSigner, 'token signer should have been created')
@@ -33,7 +33,8 @@ test('TokenSigner', (t) => {
     const token = tokenSigner.sign(sampleDecodedToken.payload)
     t.ok(token, 'token should have been created')
     t.equal(typeof token, 'string', 'token should be a string')
-    
+    t.equal(token.split('.').length, 3, 'token should have 3 parts')
+
     const decodedToken = decodeToken(token)
     t.equal(
         JSON.stringify(decodedToken.header),

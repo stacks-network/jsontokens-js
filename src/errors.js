@@ -7,3 +7,11 @@ export class MissingParametersError extends Error {
     this.message = (message || '')
   }
 }
+
+export class InvalidTokenError extends Error {
+  constructor(message) {
+    super()
+    this.name = 'InvalidTokenError'
+    this.message = (message || '')
+  }
+}

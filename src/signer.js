@@ -54,6 +54,6 @@ export class TokenSigner {
             signingInputHash, this.rawPrivateKey)
         
         // return the token
-        return [signingInput, signature].join('.')
+        return signingInput + signature
     }
 }
