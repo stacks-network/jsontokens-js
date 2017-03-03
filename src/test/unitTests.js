@@ -34,6 +34,7 @@ test('TokenSigner', (t) => {
     t.ok(token, 'token should have been created')
     t.equal(typeof token, 'string', 'token should be a string')
     t.equal(token.split('.').length, 3, 'token should have 3 parts')
+    console.log(token)
 
     const decodedToken = decodeToken(token)
     t.equal(
@@ -63,12 +64,17 @@ test('createUnsecuredToken', (t) => {
 })
 
 test('TokenVerifier', (t) => {
-    t.plan(2)
+    t.plan(3)
 
     const tokenVerifier = new TokenVerifier('ES256K', rawPublicKey)
     t.ok(tokenVerifier, 'token verifier should have been created')
     
     const verified = tokenVerifier.verify(sampleToken)
+    t.equal(verified, true, 'token should have been verified')
+
+    const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
+    const newToken = tokenSigner.sign(sampleDecodedToken.payload)
+    const newTokenVerified = tokenVerifier.verify(newToken)
     t.equal(verified, true, 'token should have been verified')
 })
 
