@@ -1,196 +1,135 @@
 'use strict';
 
+var asn1 = require('asn1.js');
+
 function base64UrlEscape(str) {
   return str.replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=/g, '');
 }
 
+var ECDSASigValue = asn1.define('ECDSASigValue', function () {
+    this.seq().obj(
+        this.key('r').int(),
+        this.key('s').int()
+    );
+});
+
+var seq = 0x10,
+    int = 0x02;
+
 function getParamSize(keySize) {
-  return ((keySize / 8) | 0) + (keySize % 8 === 0 ? 0 : 1)
+    var result = ((keySize / 8) | 0) + (keySize % 8 === 0 ? 0 : 1);
+    return result;
 }
 
-const paramBytesForAlg = {
-  ES256: getParamSize(256),
-  ES384: getParamSize(384),
-  ES512: getParamSize(521)
-}
+var paramBytesForAlg = {
+    ES256: getParamSize(256),
+    ES384: getParamSize(384),
+    ES512: getParamSize(521)
+};
 
 function getParamBytesForAlg(alg) {
-  let paramBytes = paramBytesForAlg[alg];
-  if (paramBytes) {
-    return paramBytes;
-  }
+    var paramBytes = paramBytesForAlg[alg];
+    if (paramBytes) {
+        return paramBytes;
+    }
 
-  throw new Error('Unknown algorithm "' + alg + '"');
+    throw new Error('Unknown algorithm "' + alg + '"');
 }
 
-let MAX_OCTET = 0x80,
-    CLASS_UNIVERSAL = 0,
-    PRIMITIVE_BIT = 0x20,
-    TAG_SEQ = 0x10,
-    TAG_INT = 0x02,
-    ENCODED_TAG_SEQ = (TAG_SEQ | PRIMITIVE_BIT) | (CLASS_UNIVERSAL << 6),
-    ENCODED_TAG_INT = TAG_INT | (CLASS_UNIVERSAL << 6);
+function bignumToBuf(bn, numBytes) {
+    var buf = new Buffer(bn.toString('hex', numBytes), 'hex');
+    return buf;
+}
 
 function signatureAsBuffer(signature) {
-  if (Buffer.isBuffer(signature)) {
-    return signature;
-  } else if ('string' === typeof signature) {
-    return Buffer.from(signature, 'base64');
-  }
+    if (Buffer.isBuffer(signature)) {
+        return new Buffer(signature);
+    } else if ('string' === typeof signature) {
+        return new Buffer(signature, 'base64');
+    }
 
-  throw new TypeError('ECDSA signature must be a Base64 string or a Buffer');
+    throw new TypeError('ECDSA signature must be a Base64 string or a Buffer');
+}
+
+function reduceBuffer(buf) {
+    var padding = 0;
+    for (var n = buf.length; padding < n && buf[padding] === 0;) {
+        ++padding;
+    }
+
+    var needsSign = buf[padding] >= 0x80;
+    if (needsSign) {
+        --padding;
+
+        if (padding < 0) {
+            var old = buf;
+            buf = new Buffer(1 + buf.length);
+            buf[0] = 0;
+            old.copy(buf, 1);
+
+            return buf;
+        }
+    }
+
+    if (padding === 0) {
+        return buf;
+    }
+
+    buf = buf.slice(padding);
+    return buf;
 }
 
 export function derToJose(signature, alg) {
-  signature = signatureAsBuffer(signature);
-  let paramBytes = getParamBytesForAlg(alg);
+    signature = signatureAsBuffer(signature);
+    var paramBytes = getParamBytesForAlg(alg);
 
-  // the DER encoded param should at most be the param size, plus a padding
-  // zero, since due to being a signed integer
-  let maxEncodedParamLength = paramBytes + 1;
+    signature = ECDSASigValue.decode(signature, 'der');
 
-  let inputLength = signature.length;
+    var r = bignumToBuf(signature.r, paramBytes);
+    var s = bignumToBuf(signature.s, paramBytes);
 
-  let offset = 0;
-  if (signature[offset++] !== ENCODED_TAG_SEQ) {
-    throw new Error('Could not find expected "seq"');
-  }
+    signature = Buffer.concat([r, s], r.length + s.length);
+    signature = signature.toString('base64');
+    signature = base64UrlEscape(signature);
 
-  let seqLength = signature[offset++];
-  if (seqLength === (MAX_OCTET | 1)) {
-    seqLength = signature[offset++];
-  }
-
-  if (inputLength - offset < seqLength) {
-    throw new Error('"seq" specified length of "' + seqLength + '", only "' + (inputLength - offset) + '" remaining');
-  }
-
-  if (signature[offset++] !== ENCODED_TAG_INT) {
-    throw new Error('Could not find expected "int" for "r"');
-  }
-
-  let rLength = signature[offset++];
-
-  if (inputLength - offset - 2 < rLength) {
-    throw new Error('"r" specified length of "' + rLength + '", only "' + (inputLength - offset - 2) + '" available');
-  }
-
-  if (maxEncodedParamLength < rLength) {
-    throw new Error('"r" specified length of "' + rLength + '", max of "' + maxEncodedParamLength + '" is acceptable');
-  }
-
-  let rOffset = offset;
-  offset += rLength;
-
-  if (signature[offset++] !== ENCODED_TAG_INT) {
-    throw new Error('Could not find expected "int" for "s"');
-  }
-
-  let sLength = signature[offset++];
-
-  if (inputLength - offset !== sLength) {
-    throw new Error('"s" specified length of "' + sLength + '", expected "' + (inputLength - offset) + '"');
-  }
-
-  if (maxEncodedParamLength < sLength) {
-    throw new Error('"s" specified length of "' + sLength + '", max of "' + maxEncodedParamLength + '" is acceptable');
-  }
-
-  let sOffset = offset;
-  offset += sLength;
-
-  if (offset !== inputLength) {
-    throw new Error('Expected to consume entire buffer, but "' + (inputLength - offset) + '" bytes remain');
-  }
-
-  let rPadding = paramBytes - rLength,
-    sPadding = paramBytes - sLength;
-
-  let dst = Buffer.allocUnsafe(rPadding + rLength + sPadding + sLength);
-
-  for (offset = 0; offset < rPadding; ++offset) {
-    dst[offset] = 0;
-  }
-  signature.copy(dst, offset, rOffset + Math.max(-rPadding, 0), rOffset + rLength);
-
-  offset = paramBytes;
-
-  for (let o = offset; offset < o + sPadding; ++offset) {
-    dst[offset] = 0;
-  }
-  signature.copy(dst, offset, sOffset + Math.max(-sPadding, 0), sOffset + sLength);
-
-  dst = dst.toString('base64');
-  dst = base64UrlEscape(dst);
-
-  return dst;
-}
-
-function countPadding(buf, start, stop) {
-  let padding = 0;
-  while (start + padding < stop && buf[start + padding] === 0) {
-    ++padding;
-  }
-
-  let needsSign = buf[start + padding] >= MAX_OCTET;
-  if (needsSign) {
-    --padding;
-  }
-
-  return padding;
+    return signature;
 }
 
 export function joseToDer(signature, alg) {
-  signature = signatureAsBuffer(signature);
-  let paramBytes = getParamBytesForAlg(alg);
+    signature = signatureAsBuffer(signature);
+    var paramBytes = getParamBytesForAlg(alg);
 
-  let signatureBytes = signature.length;
-  if (signatureBytes !== paramBytes * 2) {
-    throw new TypeError('"' + alg + '" signatures must be "' + paramBytes * 2 + '" bytes, saw "' + signatureBytes + '"');
-  }
+    var signatureBytes = signature.length;
+    if (signatureBytes !== paramBytes * 2) {
+        throw new TypeError('"' + alg + '" signatures must be "' + paramBytes * 2 + '" bytes, saw "' + signatureBytes + '"');
+    }
 
-  let rPadding = countPadding(signature, 0, paramBytes);
-  let sPadding = countPadding(signature, paramBytes, signature.length);
-  let rLength = paramBytes - rPadding;
-  let sLength = paramBytes - sPadding;
+    var r = reduceBuffer(signature.slice(0, paramBytes));
+    var s = reduceBuffer(signature.slice(paramBytes));
 
-  let rsBytes = 1 + 1 + rLength + 1 + 1 + sLength;
+    var rsBytes = 1 + 1 + r.length + 1 + 1 + s.length;
 
-  let shortLength = rsBytes < MAX_OCTET;
+    var oneByteLength = rsBytes < 0x80;
 
-  let dst = Buffer.allocUnsafe((shortLength ? 2 : 3) + rsBytes);
+    signature = new Buffer((oneByteLength ? 2 : 3) + rsBytes);
 
-  let offset = 0;
-  dst[offset++] = ENCODED_TAG_SEQ;
-  if (shortLength) {
-    // Bit 8 has value "0"
-    // bits 7-1 give the length.
-    dst[offset++] = rsBytes;
-  } else {
-    // Bit 8 of first octet has value "1"
-    // bits 7-1 give the number of additional length octets.
-    dst[offset++] = MAX_OCTET | 1;
-    // length, base 256
-    dst[offset++] = rsBytes & 0xff;
-  }
-  dst[offset++] = ENCODED_TAG_INT;
-  dst[offset++] = rLength;
-  if (rPadding < 0) {
-    dst[offset++] = 0;
-    offset += signature.copy(dst, offset, 0, paramBytes);
-  } else {
-    offset += signature.copy(dst, offset, rPadding, paramBytes);
-  }
-  dst[offset++] = ENCODED_TAG_INT;
-  dst[offset++] = sLength;
-  if (sPadding < 0) {
-    dst[offset++] = 0;
-    signature.copy(dst, offset, paramBytes);
-  } else {
-    signature.copy(dst, offset, paramBytes + sPadding);
-  }
+    var offset = 0;
+    signature[offset++] = (seq | 0x20) | 0 << 6;
+    if (oneByteLength) {
+        signature[offset++] = rsBytes;
+    } else {
+        signature[offset++] = 0x80 | 1;
+        signature[offset++] = rsBytes & 0xff;
+    }
+    signature[offset++] = int | (0 << 6);
+    signature[offset++] = r.length;
+    r.copy(signature, offset);
+    offset += r.length;
+    signature[offset++] = int | (0 << 6);
+    signature[offset++] = s.length;
+    s.copy(signature, offset);
 
-  return dst;
+    return signature;
 }
