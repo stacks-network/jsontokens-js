@@ -3,6 +3,7 @@
 import base64url from 'base64url'
 import { cryptoClients } from './cryptoClients'
 import decodeToken from './decode'
+import { MissingParametersError } from './errors'
 
 function createSigningInput(payload, header) {
     let tokenParts = []
@@ -57,7 +58,7 @@ export class TokenSigner {
         // sign the message and add in the signature
         const signature = this.cryptoClient.signHash(
             signingInputHash, this.rawPrivateKey)
-        
+
         // return the token
         return [signingInput, signature].join('.')
     }
