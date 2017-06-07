@@ -4,7 +4,7 @@ import test from 'tape'
 
 import {
     TokenSigner, TokenVerifier, decodeToken, createUnsignedToken,
-    MissingParametersError, SECP256K1Client
+    MissingParametersError, SECP256K1Client, mergeTokens
 } from '../index'
 
 const rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
@@ -66,6 +66,24 @@ test('TokenVerifier', (t) => {
     
     const verified = tokenVerifier.verify(sampleToken)
     t.equal(verified, true, 'token should have been verified')
+})
+
+test('expandedToken', (t) => {
+    t.plan(3)
+
+    const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
+    const tokenVerifier = new TokenVerifier('ES256K', rawPublicKey)
+
+    const token = tokenSigner.sign(sampleDecodedToken.payload, true)
+    t.ok(token, 'expanded token should have been created')
+    t.equal(typeof token, 'object', 'expanded token should be an Object')
+
+    console.log(JSON.stringify(token))
+
+    const verified = tokenVerifier.verify(token)
+    t.equal(verified, true, 'token should have been verified')
+
+    const token2 = tokenSigner.sign(sampleDecodedToken.payload, true)
 })
 
 test('decodeToken', (t) => {

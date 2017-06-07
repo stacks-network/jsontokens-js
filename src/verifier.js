@@ -23,6 +23,16 @@ export class TokenVerifier {
     }
 
     verify(token) {
+        if (typeof token === 'string') {
+            return this.verifyCompact(token)
+        } else if (typeof token === 'object') {
+            return this.verifyExpanded(token)
+        } else {
+            return false
+        }
+    }
+
+    verifyCompact(token) {
         // decompose the token into parts
         const tokenParts = token.split('.')
 
@@ -35,6 +45,27 @@ export class TokenVerifier {
      
         // verify the signed hash
         return this.cryptoClient.verifyHash(
-            signingInputHash, derSignatureBuffer, this.rawPublicKey)
+            signingInputHash, derSignatureBuffer, this.rawPublicKey)        
+    }
+
+    verifyExpanded(token) {
+        const signingInput = [
+            token["header"].join('.'),
+            base64url.encode(token["payload"])
+        ].join('.')
+        const signingInputHash = this.cryptoClient.createHash(signingInput)
+
+        let verified = true
+
+        token["signature"].map((signature) => {
+            const derSignatureBuffer = this.cryptoClient.loadSignature(signature)
+            const signatureVerified = this.cryptoClient.verifyHash(
+                signingInputHash, derSignatureBuffer, this.rawPublicKey)
+            if (!signatureVerified) {
+                verified = false
+            }
+        })
+
+        return verified
     }
 }
