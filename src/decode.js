@@ -1,6 +1,7 @@
 'use strict'
 
 import base64url from 'base64url'
+import { InvalidTokenError } from './errors'
 
 export function decodeToken(token) {
     if (typeof token === 'string') {
