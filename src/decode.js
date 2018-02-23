@@ -4,21 +4,35 @@ import base64url from 'base64url'
 import { InvalidTokenError } from './errors'
 
 export function decodeToken(token) {
-  // decompose the token into parts
-  const tokenParts = token.split('.')
+    if (typeof token === 'string') {
+        // decompose the token into parts
+        const tokenParts = token.split('.')
+        const header = JSON.parse(base64url.decode(tokenParts[0]))
+        const payload = JSON.parse(base64url.decode(tokenParts[1]))
+        const signature = tokenParts[2]
 
-  if (tokenParts.length !== 3) {
-    throw new InvalidTokenError('tokens should have 3 parts')
-  }
+        // return the token object
+        return {
+            header: header,
+            payload: payload,
+            signature: signature
+        }
+    } else if (typeof token === 'object') {
+        let payload = token.payload
+        if (token.payload[0] !== '{') {
+            payload = base64url.decode(payload)
+        }
 
-  const header = JSON.parse(base64url.decode(tokenParts[0]))
-  const payload = JSON.parse(base64url.decode(tokenParts[1]))
-  const signature = tokenParts[2]
+        let allHeaders = []
+        token.header.map((headerValue) => {
+            const header = JSON.parse(base64url.decode(headerValue))
+            allHeaders.push(header)
+        })
 
-  // return the token object
-  return {
-    header: header,
-    payload: payload,
-    signature: signature
-  }
+        return {
+            header: allHeaders,
+            payload: JSON.parse(payload),
+            signature: token.signature
+        }
+    }
 }
