@@ -3,12 +3,14 @@
   "version": "0.7.6",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "compile": "babel --presets es2015 src -d lib",
+    "compile": "babel --presets es2015 src -d lib && npm run copy-ts-declarations",
     "test": "npm run compile; node lib/test/index.js",
     "prepublish": "npm run compile",
     "browserify-test": "npm run compile; node lib/test/browserifyTests.js",
-    "browserify-app": "npm run compile; browserify lib/test/browserifyApp.js -o lib/test/bundle.js"
+    "browserify-app": "npm run compile; browserify lib/test/browserifyApp.js -o lib/test/bundle.js",
+    "copy-ts-declarations": "cd src/ && find . -name '*.d.ts' -exec cp --parents '{}' ../lib/ \\; && cd ../"
   },
   "repository": {
     "type": "git",
