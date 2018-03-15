@@ -4,7 +4,7 @@
 [![npm](https://img.shields.io/npm/l/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
 [![npm](https://img.shields.io/npm/v/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
 [![npm](https://img.shields.io/npm/dm/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
-[![Slack](http://slack.blockstack.org/badge.svg)](http://slack.blockstack.org/)
+[![Slack](https://img.shields.io/badge/join-slack-e32072.svg?style=flat)](http://slack.blockstack.org/)
 
 node.js library for signing, decoding, and verifying JSON Web Tokens (JWTs)
 
@@ -21,7 +21,7 @@ import { TokenSigner } from 'jsontokens'
 
 const rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
 const tokenPayload = {"iat": 1440713414.85}
-const token = new TokenSigner('ES256k', rawPrivateKey).sign(tokenPayload)
+const token = new TokenSigner('ES256K', rawPrivateKey).sign(tokenPayload)
 ```
 
 ### Creating Unsecured Tokens
@@ -29,7 +29,7 @@ const token = new TokenSigner('ES256k', rawPrivateKey).sign(tokenPayload)
 ```js
 import { createUnsecuredToken } from 'jsontokens'
 
-const createUnsecuredToken(tokenPayload)
+const unsecuredToken = createUnsecuredToken(tokenPayload)
 ```
 
 ### Decoding Tokens
@@ -44,7 +44,7 @@ const tokenData = decodeToken(token)
 ```js
 import { TokenVerifier } from 'jsontokens'
 const rawPublicKey = '03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479'
-const verified = new TokenVerifier('ES256k', rawPublicKey).verify(token)
+const verified = new TokenVerifier('ES256K', rawPublicKey).verify(token)
 ```
 
 ### Example Tokens
