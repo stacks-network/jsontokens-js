@@ -4,7 +4,7 @@
  * 
  * It got copied over here to make some adjustments for being compatible with browserify.
  * Going forward would be either simplifying this code (as we only need 256 bit signatures),
- * or moving back to the direct dependency; both is future work™ for some other day.
+ * or moving back to the direct dependency; both is future work(TM) for some other day.
  */
 
 
