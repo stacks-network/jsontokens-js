@@ -42,10 +42,10 @@ export class TokenSigner {
      * Returns a signed JWT based on a given payload
      * 
      * @param payload The payload for the JWT
-     * @param expanded Determines the return value (string on false, otherwise a JWT object)
+     * @param expanded Determines the return value (string on false, otherwise a JWT object), defaults to false
      * @returns A signed JWT (either represented by a string or a JWT object)
      */
-    sign(payload: any, expanded: boolean): string|JWT;
+    sign(payload: any, expanded?: boolean): string|JWT;
 }
 
 /**
