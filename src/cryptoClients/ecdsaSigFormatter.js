@@ -1,3 +1,13 @@
+/*
+ * This code is taken from https://github.com/Brightspace/node-ecdsa-sig-formatter
+ * which is licensed under the Apache 2.0 license.
+ * 
+ * It got copied over here to make some adjustments for being compatible with browserify.
+ * Going forward would be either simplifying this code (as we only need 256 bit signatures),
+ * or moving back to the direct dependency; both is future work(TM) for some other day.
+ */
+
+
 'use strict';
 
 var asn1 = require('asn1.js');
@@ -26,7 +36,7 @@ function getParamSize(keySize) {
 var paramBytesForAlg = {
     ES256: getParamSize(256),
     ES384: getParamSize(384),
-    ES512: getParamSize(521)
+    ES512: getParamSize(512)
 };
 
 function getParamBytesForAlg(alg) {
