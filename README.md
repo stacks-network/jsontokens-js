@@ -4,7 +4,7 @@
 [![npm](https://img.shields.io/npm/l/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
 [![npm](https://img.shields.io/npm/v/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
 [![npm](https://img.shields.io/npm/dm/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
-[![Slack](http://slack.blockstack.org/badge.svg)](http://slack.blockstack.org/)
+[![Slack](https://img.shields.io/badge/join-slack-e32072.svg?style=flat)](http://slack.blockstack.org/)
 
 node.js library for signing, decoding, and verifying JSON Web Tokens (JWTs)
 
