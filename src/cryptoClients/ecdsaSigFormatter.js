@@ -26,7 +26,7 @@ function getParamSize(keySize) {
 var paramBytesForAlg = {
     ES256: getParamSize(256),
     ES384: getParamSize(384),
-    ES512: getParamSize(521)
+    ES512: getParamSize(512)
 };
 
 function getParamBytesForAlg(alg) {
