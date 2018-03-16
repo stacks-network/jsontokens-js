@@ -146,7 +146,7 @@ export declare class SECP256K1Client {
 
     static createHash(signingInput: any): any;
 
-    static derivePublicKey(privateKey: any, compressed: any): any;
+    static derivePublicKey(privateKey: any, compressed?: any): any;
 
     static encodePublicKey(publicKey: any, originalFormat: any, destinationFormat: any): any;
 
