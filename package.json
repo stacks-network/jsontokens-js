@@ -7,7 +7,6 @@
     "compile": "babel --presets env src -d lib",
     "test": "npm run compile; node lib/test/index.js",
     "prepublish": "npm run compile",
-    "browserify-test": "npm run compile; node lib/test/browserifyTests.js",
     "browserify-app": "npm run compile; browserify lib/test/browserifyApp.js -o lib/test/bundle.js"
   },
   "repository": {
@@ -42,10 +41,7 @@
     "babelify": "^7.3.0",
     "brfs": "^1.4.3",
     "browserify": "^13.1.1",
-    "browserify-test": "^2.2.0",
-    "phantomjs-prebuilt": "^2.1.13",
-    "tape": "^4.2.0",
-    "tape-run": "^2.1.4"
+    "tape": "^4.2.0"
   },
   "dependencies": {
     "asn1.js": "^4.9.1",
