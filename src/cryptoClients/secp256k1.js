@@ -63,7 +63,7 @@ export class SECP256K1Client {
     const privateKeyObject = SECP256K1Client.loadPrivateKey(rawPrivateKey)
     // calculate the signature
     const signatureObject = privateKeyObject.sign(signingInputHash)
-    const derSignature = new Buffer(signatureObject.toDER())
+    const derSignature = Buffer.from(signatureObject.toDER())
 
     if (format === 'der') {
       return derSignature.toString('hex')

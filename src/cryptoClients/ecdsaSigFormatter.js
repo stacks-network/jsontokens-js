@@ -49,15 +49,15 @@ function getParamBytesForAlg(alg) {
 }
 
 function bignumToBuf(bn, numBytes) {
-    var buf = new Buffer(bn.toString('hex', numBytes), 'hex');
+    var buf = Buffer.from(bn.toString('hex', numBytes), 'hex');
     return buf;
 }
 
 function signatureAsBuffer(signature) {
     if (Buffer.isBuffer(signature)) {
-        return new Buffer(signature);
+        return Buffer.from(signature);
     } else if ('string' === typeof signature) {
-        return new Buffer(signature, 'base64');
+        return Buffer.from(signature, 'base64');
     }
 
     throw new TypeError('ECDSA signature must be a Base64 string or a Buffer');
@@ -75,7 +75,7 @@ function reduceBuffer(buf) {
 
         if (padding < 0) {
             var old = buf;
-            buf = new Buffer(1 + buf.length);
+            buf = Buffer.alloc(1 + buf.length);
             buf[0] = 0;
             old.copy(buf, 1);
 
@@ -123,7 +123,7 @@ export function joseToDer(signature, alg) {
 
     var oneByteLength = rsBytes < 0x80;
 
-    signature = new Buffer((oneByteLength ? 2 : 3) + rsBytes);
+    signature = Buffer.alloc((oneByteLength ? 2 : 3) + rsBytes);
 
     var offset = 0;
     signature[offset++] = (seq | 0x20) | 0 << 6;
