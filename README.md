@@ -6,7 +6,7 @@
 [![npm](https://img.shields.io/npm/dm/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
 [![Slack](https://img.shields.io/badge/join-slack-e32072.svg?style=flat)](http://slack.blockstack.org/)
 
-node.js library for signing, decoding, and verifying JSON Web Tokens (JWTs)
+node.js library for signing, decoding, and verifying JSON Web Tokens (JWTs) with the ES256K signature scheme (which uses the secp256k elliptic curve). This is currently the only supported signing and verification scheme for this library.
 
 ### Installation
 
