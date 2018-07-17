@@ -41,6 +41,8 @@ const tokenData = decodeToken(token)
 
 ### Verifying Tokens
 
+The TokenVerifier class will validate that a token is correctly signed. It does not perform checks on the claims in the payload (e.g., the `exp` field)--- checking the expiration field, etc., is left as a requirement for callers.
+
 ```js
 import { TokenVerifier } from 'jsontokens'
 const rawPublicKey = '03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479'
