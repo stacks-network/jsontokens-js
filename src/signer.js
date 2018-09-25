@@ -46,13 +46,18 @@ export class TokenSigner {
         this.rawPrivateKey = rawPrivateKey
     }
 
-    header() {
-        return {typ: this.tokenType, alg: this.cryptoClient.algorithmName}
+    header(header = {}) {
+        const defaultHeader = { typ: this.tokenType,
+                                alg: this.cryptoClient.algorithmName }
+        return Object.assign({}, defaultHeader, header)
     }
 
-    sign(payload, expanded=false) {
+    sign(payload, expanded = false, customHeader = {}) {
+        // generate the token header
+        const header = this.header(customHeader)
+
         // prepare the message to be signed
-        const signingInput = createSigningInput(payload, this.header())
+        const signingInput = createSigningInput(payload, header)
         const signingInputHash = this.cryptoClient.createHash(signingInput)
 
         // sign the message and add in the signature
@@ -62,7 +67,7 @@ export class TokenSigner {
         if (expanded) {
             return {
                 "header": [
-                    base64url.encode(JSON.stringify(this.header()))
+                    base64url.encode(JSON.stringify(header))
                 ],
                 "payload": JSON.stringify(payload),
                 "signature": [
