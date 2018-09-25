@@ -6,7 +6,7 @@
 [![npm](https://img.shields.io/npm/dm/jsontokens.svg)](https://www.npmjs.com/package/jsontokens)
 [![Slack](https://img.shields.io/badge/join-slack-e32072.svg?style=flat)](http://slack.blockstack.org/)
 
-node.js library for signing, decoding, and verifying JSON Web Tokens (JWTs)
+node.js library for signing, decoding, and verifying JSON Web Tokens (JWTs) with the ES256K signature scheme (which uses the secp256k elliptic curve). This is currently the only supported signing and verification scheme for this library.
 
 ### Installation
 
@@ -40,6 +40,8 @@ const tokenData = decodeToken(token)
 ```
 
 ### Verifying Tokens
+
+The TokenVerifier class will validate that a token is correctly signed. It does not perform checks on the claims in the payload (e.g., the `exp` field)--- checking the expiration field, etc., is left as a requirement for callers.
 
 ```js
 import { TokenVerifier } from 'jsontokens'
