@@ -52,6 +52,36 @@ export function runMainTests() {
         t.throws(() => { new TokenSigner('ES256K') }, /MissingParametersError/, 'Should throw MissingParametersError')
     })
 
+
+    test('TokenSigner custom header', (t) => {
+        t.plan(7)
+
+        const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
+        t.ok(tokenSigner, 'token signer should have been created')
+
+        const token = tokenSigner.sign(sampleDecodedToken.payload, undefined, { test: 'TestHeader' })
+        t.ok(token, 'token should have been created')
+        t.equal(typeof token, 'string', 'token should be a string')
+        t.equal(token.split('.').length, 3, 'token should have 3 parts')
+        //console.log(token)
+
+        const decodedToken = decodeToken(token)
+        t.equal(
+            JSON.stringify(decodedToken.header),
+            JSON.stringify(Object.assign({},
+                                         sampleDecodedToken.header,
+                                         { test: 'TestHeader' })),
+            'decodedToken header should match the reference header'
+        )
+        t.equal(
+            JSON.stringify(decodedToken.payload),
+            JSON.stringify(sampleDecodedToken.payload),
+            'decodedToken payload should match the reference payload'
+        )
+
+        t.throws(() => { new TokenSigner('ES256K') }, /MissingParametersError/, 'Should throw MissingParametersError')
+    })
+
     test('createUnsecuredToken', (t) => {
         t.plan(3)
 
