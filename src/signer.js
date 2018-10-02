@@ -2,11 +2,10 @@
 
 import base64url from 'base64url'
 import { cryptoClients } from './cryptoClients'
-import decodeToken from './decode'
 import { MissingParametersError } from './errors'
 
 function createSigningInput(payload, header) {
-    let tokenParts = []
+    const tokenParts = []
 
     // add in the header
     const encodedHeader = base64url.encode(JSON.stringify(header))
@@ -66,11 +65,11 @@ export class TokenSigner {
 
         if (expanded) {
             return {
-                "header": [
+                'header': [
                     base64url.encode(JSON.stringify(header))
                 ],
-                "payload": JSON.stringify(payload),
-                "signature": [
+                'payload': JSON.stringify(payload),
+                'signature': [
                     signature
                 ]
             }

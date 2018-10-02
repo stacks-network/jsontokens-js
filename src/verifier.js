@@ -2,7 +2,7 @@
 
 import base64url from 'base64url'
 import { cryptoClients } from './cryptoClients'
-import decodeToken from './decode'
+import { MissingParametersError } from './errors'
 
 export class TokenVerifier {
     constructor(signingAlgorithm, rawPublicKey) {
@@ -42,22 +42,22 @@ export class TokenVerifier {
 
         // extract the signature as a DER array
         const derSignatureBuffer = this.cryptoClient.loadSignature(tokenParts[2])
-     
+
         // verify the signed hash
         return this.cryptoClient.verifyHash(
-            signingInputHash, derSignatureBuffer, this.rawPublicKey)        
+            signingInputHash, derSignatureBuffer, this.rawPublicKey)
     }
 
     verifyExpanded(token) {
         const signingInput = [
-            token["header"].join('.'),
-            base64url.encode(token["payload"])
+            token['header'].join('.'),
+            base64url.encode(token['payload'])
         ].join('.')
         const signingInputHash = this.cryptoClient.createHash(signingInput)
 
         let verified = true
 
-        token["signature"].map((signature) => {
+        token['signature'].map((signature) => {
             const derSignatureBuffer = this.cryptoClient.loadSignature(signature)
             const signatureVerified = this.cryptoClient.verifyHash(
                 signingInputHash, derSignatureBuffer, this.rawPublicKey)
