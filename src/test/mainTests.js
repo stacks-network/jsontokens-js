@@ -4,8 +4,7 @@ import test from 'tape'
 import base64url from 'base64url'
 
 import {
-    TokenSigner, TokenVerifier, decodeToken, createUnsecuredToken,
-    MissingParametersError, SECP256K1Client
+    TokenSigner, TokenVerifier, decodeToken, createUnsecuredToken
 } from '../index'
 
 export function runMainTests() {
@@ -49,7 +48,9 @@ export function runMainTests() {
             'decodedToken payload should match the reference payload'
         )
 
-        t.throws(() => { new TokenSigner('ES256K') }, /MissingParametersError/, 'Should throw MissingParametersError')
+        t.throws(() => {
+ new TokenSigner('ES256K') 
+}, /MissingParametersError/, 'Should throw MissingParametersError')
     })
 
 
@@ -79,7 +80,9 @@ export function runMainTests() {
             'decodedToken payload should match the reference payload'
         )
 
-        t.throws(() => { new TokenSigner('ES256K') }, /MissingParametersError/, 'Should throw MissingParametersError')
+        t.throws(() => {
+          new TokenSigner('ES256K')
+        }, /MissingParametersError/, 'Should throw MissingParametersError')
     })
 
     test('createUnsecuredToken', (t) => {
@@ -108,7 +111,7 @@ export function runMainTests() {
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
         const newToken = tokenSigner.sign(sampleDecodedToken.payload)
         const newTokenVerified = tokenVerifier.verify(newToken)
-        t.equal(verified, true, 'token should have been verified')
+        t.equal(newTokenVerified, true, 'token should have been verified')
     })
 
     test('decodeToken', (t) => {
@@ -138,6 +141,6 @@ export function runMainTests() {
         const verified = tokenVerifier.verify(token)
         t.equal(verified, true, 'token should have been verified')
 
-        const token2 = tokenSigner.sign(sampleDecodedToken.payload, true)
+        tokenSigner.sign(sampleDecodedToken.payload, true)
     })
 }

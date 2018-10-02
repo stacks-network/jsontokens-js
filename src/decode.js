@@ -1,7 +1,6 @@
 'use strict'
 
 import base64url from 'base64url'
-import { InvalidTokenError } from './errors'
 
 export function decodeToken(token) {
     if (typeof token === 'string') {
@@ -23,7 +22,7 @@ export function decodeToken(token) {
             payload = base64url.decode(payload)
         }
 
-        let allHeaders = []
+        const allHeaders = []
         token.header.map((headerValue) => {
             const header = JSON.parse(base64url.decode(headerValue))
             allHeaders.push(header)
