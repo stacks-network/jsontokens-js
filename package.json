@@ -4,11 +4,11 @@
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
   "scripts": {
-    "compile": "babel --presets env src -d lib",
-    "test": "npm run compile; nyc --reporter=text node lib/test/index.js",
+    "compile": "babel --presets env ./src -d ./lib",
+    "test": "npm run compile; nyc --reporter=text node ./lib/test/index.js",
     "prepublish": "npm run compile",
-    "browserify-app": "npm run compile; browserify lib/test/browserifyApp.js -o lib/test/bundle.js",
-    "postinstall": "npm run compile"
+    "browserify-app": "npm run compile; browserify ./lib/test/browserifyApp.js -o ./lib/test/bundle.js",
+    "install": "npm run compile"
   },
   "repository": {
     "type": "git",
