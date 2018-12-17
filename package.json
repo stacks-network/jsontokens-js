@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "compile": "babel --presets env src -d lib",
-    "test": "npm run compile; node lib/test/index.js",
+    "test": "npm run compile; nyc --reporter=text node lib/test/index.js",
     "prepublish": "npm run compile",
     "browserify-app": "npm run compile; browserify lib/test/browserifyApp.js -o lib/test/bundle.js"
   },
@@ -42,13 +42,14 @@
     "brfs": "^1.4.3",
     "browserify": "^13.1.1",
     "browserify-des": "^1.0.1",
+    "nyc": "^13.1.0",
     "tape": "^4.2.0"
   },
   "dependencies": {
-    "asn1.js": "^4.9.1",
-    "base64url": "^3.0.0",
-    "elliptic": "^6.3.2",
-    "key-encoder": "^1.1.6",
-    "validator": "^7.0.0"
+    "asn1.js": "^5.0.1",
+    "base64url": "^3.0.1",
+    "elliptic": "^6.4.1",
+    "key-encoder": "github:blockstack/key-encoder-js#develop",
+    "validator": "^10.9.0"
   }
 }
