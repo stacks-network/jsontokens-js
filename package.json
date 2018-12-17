@@ -7,7 +7,8 @@
     "compile": "babel --presets env src -d lib",
     "test": "npm run compile; nyc --reporter=text node lib/test/index.js",
     "prepublish": "npm run compile",
-    "browserify-app": "npm run compile; browserify lib/test/browserifyApp.js -o lib/test/bundle.js"
+    "browserify-app": "npm run compile; browserify lib/test/browserifyApp.js -o lib/test/bundle.js",
+    "postinstall": "npm run compile"
   },
   "repository": {
     "type": "git",
