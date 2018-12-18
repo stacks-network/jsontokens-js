@@ -1,9 +1,15 @@
 'use strict'
 
-import {
+export {
     TokenSigner, TokenVerifier, decodeToken,
-    MissingParametersError, SECP256K1Client
+    MissingParametersError
 } from '../index'
+
+import {
+  SECP256K1Client
+} from '../index'
+
+export { SECP256K1Client }
 
 const hash = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
 const rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'

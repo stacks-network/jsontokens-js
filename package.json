@@ -1,13 +1,13 @@
 {
   "name": "jsontokens",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
   "scripts": {
     "compile": "babel --presets env src -d lib",
-    "test": "npm run compile; node lib/test/index.js",
+    "test": "eslint src/ && npm run compile && nyc --reporter=text node lib/test/index.js",
     "prepublish": "npm run compile",
-    "browserify-app": "npm run compile; browserify lib/test/browserifyApp.js -o lib/test/bundle.js"
+    "browserify-app": "npm run compile && browserify lib/test/browserifyApp.js -o lib/test/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -37,18 +37,23 @@
   "homepage": "https://github.com/blockstack/jsontokens-js#readme",
   "devDependencies": {
     "babel-cli": "^6.18.0",
+    "babel-eslint": "^10.0.1",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
     "babelify": "^7.3.0",
     "brfs": "^1.4.3",
     "browserify": "^13.1.1",
     "browserify-des": "^1.0.1",
+    "eslint": "^5.6.1",
+    "eslint-plugin-flowtype": "^2.50.3",
+    "nyc": "^13.1.0",
     "tape": "^4.2.0"
   },
   "dependencies": {
-    "asn1.js": "^4.9.1",
-    "base64url": "^3.0.0",
-    "elliptic": "^6.3.2",
-    "key-encoder": "^1.1.6",
-    "validator": "^7.0.0"
+    "asn1.js": "^5.0.1",
+    "base64url": "^3.0.1",
+    "elliptic": "^6.4.1",
+    "key-encoder": "^1.1.7",
+    "validator": "^10.9.0"
   }
 }
