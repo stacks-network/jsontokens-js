@@ -4,10 +4,12 @@
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
   "scripts": {
-    "compile": "babel --presets env src -d lib",
-    "test": "eslint src/ && npm run compile && nyc --reporter=text node lib/test/index.js",
-    "prepublish": "npm run compile",
-    "browserify-app": "npm run compile && browserify lib/test/browserifyApp.js -o lib/test/bundle.js"
+    "compile": "tsc",
+    "lint": "eslint --ext .ts ./src",
+    "test": "npm run lint && nyc node ./src/test/index.ts",
+    "codecovUpload": "codecov",
+    "prepublishOnly": "npm run compile",
+    "prepare": "npm run compile"
   },
   "repository": {
     "type": "git",
@@ -36,24 +38,55 @@
   },
   "homepage": "https://github.com/blockstack/jsontokens-js#readme",
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-eslint": "^10.0.1",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-flow": "^6.23.0",
-    "babelify": "^7.3.0",
-    "brfs": "^1.4.3",
-    "browserify": "^13.1.1",
-    "browserify-des": "^1.0.1",
-    "eslint": "^5.6.1",
-    "eslint-plugin-flowtype": "^2.50.3",
-    "nyc": "^13.1.0",
-    "tape": "^4.2.0"
+    "@types/elliptic": "^6.4.6",
+    "@types/node": "^10.14.6",
+    "@types/tape": "^4.2.33",
+    "@types/validator": "^10.11.0",
+    "@typescript-eslint/eslint-plugin": "^1.7.0",
+    "@typescript-eslint/parser": "^1.7.0",
+    "codecov": "^3.3.0",
+    "eslint": "^5.16.0",
+    "istanbul": "^0.4.5",
+    "nyc": "^14.0.0",
+    "source-map-support": "^0.5.12",
+    "tape": "^4.10.1",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5"
   },
   "dependencies": {
     "asn1.js": "^5.0.1",
     "base64url": "^3.0.1",
+    "ecdsa-sig-formatter": "^1.0.11",
     "elliptic": "^6.4.1",
-    "key-encoder": "^1.1.7",
-    "validator": "^10.9.0"
+    "key-encoder": "github:blockstack/key-encoder-js#feature/typescript-port",
+    "validator": "^10.11.0"
+  },
+  "files": [
+    "lib/",
+    "src/",
+    "README.md"
+  ],
+  "nyc": {
+    "cache": false,
+    "all": true,
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "src/test/**"
+    ],
+    "require": [
+      "ts-node/register/transpile-only",
+      "source-map-support/register"
+    ],
+    "reporter": [
+      "text",
+      "html",
+      "lcov"
+    ]
   }
 }

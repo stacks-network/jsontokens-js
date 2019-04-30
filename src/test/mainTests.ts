@@ -1,5 +1,3 @@
-'use strict'
-
 import test from 'tape'
 import base64url from 'base64url'
 
@@ -49,8 +47,8 @@ export function runMainTests() {
         )
 
         t.throws(() => {
- new TokenSigner('ES256K') 
-}, /MissingParametersError/, 'Should throw MissingParametersError')
+            new TokenSigner('ES256K', undefined) 
+        }, /MissingParametersError/, 'Should throw MissingParametersError')
     })
 
 
@@ -81,7 +79,7 @@ export function runMainTests() {
         )
 
         t.throws(() => {
-          new TokenSigner('ES256K')
+          new TokenSigner('ES256K', undefined)
         }, /MissingParametersError/, 'Should throw MissingParametersError')
     })
 

@@ -1,11 +1,15 @@
-'use strict'
-
 import base64url from 'base64url'
-import { cryptoClients } from './cryptoClients'
+import { cryptoClients, SECP256K1Client } from './cryptoClients'
 import { MissingParametersError } from './errors'
+import { SignedToken } from './signer'
 
 export class TokenVerifier {
-    constructor(signingAlgorithm, rawPublicKey) {
+
+    tokenType: string
+    cryptoClient: typeof SECP256K1Client
+    rawPublicKey: string
+
+    constructor(signingAlgorithm: string, rawPublicKey: string) {
         if (!(signingAlgorithm && rawPublicKey)) {
             throw new MissingParametersError(
                 'a signing algorithm and public key are required')
@@ -22,7 +26,7 @@ export class TokenVerifier {
         this.rawPublicKey = rawPublicKey
     }
 
-    verify(token) {
+    verify(token: string | SignedToken) {
         if (typeof token === 'string') {
             return this.verifyCompact(token)
         } else if (typeof token === 'object') {
@@ -32,7 +36,7 @@ export class TokenVerifier {
         }
     }
 
-    verifyCompact(token) {
+    verifyCompact(token: string) {
         // decompose the token into parts
         const tokenParts = token.split('.')
 
@@ -48,7 +52,7 @@ export class TokenVerifier {
             signingInputHash, derSignatureBuffer, this.rawPublicKey)
     }
 
-    verifyExpanded(token) {
+    verifyExpanded(token: SignedToken) {
         const signingInput = [
             token['header'].join('.'),
             base64url.encode(token['payload'])
@@ -57,7 +61,7 @@ export class TokenVerifier {
 
         let verified = true
 
-        token['signature'].map((signature) => {
+        token['signature'].map((signature: string) => {
             const derSignatureBuffer = this.cryptoClient.loadSignature(signature)
             const signatureVerified = this.cryptoClient.verifyHash(
                 signingInputHash, derSignatureBuffer, this.rawPublicKey)

@@ -1,10 +1,8 @@
-'use strict'
-
 import base64url from 'base64url'
-import { cryptoClients } from './cryptoClients'
+import { cryptoClients, SECP256K1Client } from './cryptoClients'
 import { MissingParametersError } from './errors'
 
-function createSigningInput(payload, header) {
+function createSigningInput(payload: any, header: any) {
     const tokenParts = []
 
     // add in the header
@@ -22,23 +20,33 @@ function createSigningInput(payload, header) {
     return signingInput
 }
 
-export function createUnsecuredToken(payload) {
+export function createUnsecuredToken(payload: any) {
     const header = {typ: 'JWT', alg: 'none'}
     return createSigningInput(payload, header) + '.'
 }
 
+export interface SignedToken {
+    header: string[];
+    payload: string;
+    signature: string[];
+}
+
 export class TokenSigner {
-    constructor(signingAlgorithm, rawPrivateKey) {
+    tokenType: string
+    cryptoClient: typeof SECP256K1Client
+    rawPrivateKey: string
+
+    constructor(signingAlgorithm: string, rawPrivateKey: string) {
         if (!(signingAlgorithm && rawPrivateKey)) {
             throw new MissingParametersError(
                 'a signing algorithm and private key are required')
         }
         if (typeof signingAlgorithm !== 'string') {
-            throw 'signing algorithm parameter must be a string'
+            throw new Error('signing algorithm parameter must be a string')
         }
         signingAlgorithm = signingAlgorithm.toUpperCase()
         if (!cryptoClients.hasOwnProperty(signingAlgorithm)) {
-            throw 'invalid signing algorithm'
+            throw new Error('invalid signing algorithm')
         }
         this.tokenType = 'JWT'
         this.cryptoClient = cryptoClients[signingAlgorithm]
@@ -51,7 +59,12 @@ export class TokenSigner {
         return Object.assign({}, defaultHeader, header)
     }
 
-    sign(payload, expanded = false, customHeader = {}) {
+    /* eslint-disable */
+    sign(payload: any): string;
+    sign(payload: any, expanded: undefined): string;
+    sign(payload: any, expanded: false, customHeader?: any): string;
+    sign(payload: any, expanded: true, customHeader?: any): SignedToken;
+    sign(payload: any, expanded: boolean = false, customHeader: any = {}): string | SignedToken {
         // generate the token header
         const header = this.header(customHeader)
 
@@ -77,4 +90,5 @@ export class TokenSigner {
             return [signingInput, signature].join('.')
         }
     }
+    /* eslint-enable */
 }

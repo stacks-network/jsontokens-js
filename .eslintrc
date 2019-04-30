@@ -1,10 +1,14 @@
 {
-  "parser": "babel-eslint",
-  "plugins": ["flowtype"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
   "env": {
     "browser": false,
     "es6": true,
-    "node": true,
+    "node": true
   },
   "rules": {
     "comma-dangle": ["error", "never"],
@@ -17,17 +21,15 @@
     "no-trailing-spaces": 0,
     "no-extra-boolean-cast": 0,
     "no-undef": 2,
-    "no-unused-vars": 2,
+    "@typescript-eslint/no-unused-vars": 2,
     "no-var": 2,
     "no-param-reassign": 0,
     "no-else-return": 0,
     "no-console": 0,
     "prefer-const": 2,
     "new-cap": 0,
-    "camelcase": 2,
+    "@typescript-eslint/camelcase": 2,
     "brace-style": 2,
-    "semi": [2, "never"],
-    "flowtype/define-flow-type": 1,
-    "valid-jsdoc": ["error"]
+    "semi": [2, "never"]
   }
 }

@@ -1,8 +1,12 @@
-'use strict'
-
 import base64url from 'base64url'
 
-export function decodeToken(token) {
+export interface TokenInterface {
+    header: any[];
+    payload: any;
+    signature: any;
+}
+
+export function decodeToken(token: string | TokenInterface): TokenInterface {
     if (typeof token === 'string') {
         // decompose the token into parts
         const tokenParts = token.split('.')
@@ -22,7 +26,7 @@ export function decodeToken(token) {
             payload = base64url.decode(payload)
         }
 
-        const allHeaders = []
+        const allHeaders: any[] = []
         token.header.map((headerValue) => {
             const header = JSON.parse(base64url.decode(headerValue))
             allHeaders.push(header)
