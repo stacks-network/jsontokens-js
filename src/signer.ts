@@ -59,7 +59,6 @@ export class TokenSigner {
         return Object.assign({}, defaultHeader, header)
     }
 
-    /* eslint-disable */
     sign(payload: any): string;
     sign(payload: any, expanded: undefined): string;
     sign(payload: any, expanded: false, customHeader?: any): string;
@@ -90,5 +89,4 @@ export class TokenSigner {
             return [signingInput, signature].join('.')
         }
     }
-    /* eslint-enable */
 }
