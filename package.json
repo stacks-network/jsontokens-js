@@ -41,16 +41,16 @@
     "@types/elliptic": "^6.4.6",
     "@types/node": "^10.14.6",
     "@types/tape": "^4.2.33",
-    "@typescript-eslint/eslint-plugin": "^1.7.0",
-    "@typescript-eslint/parser": "^1.7.0",
-    "codecov": "^3.3.0",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
+    "codecov": "^3.5.0",
     "eslint": "^5.16.0",
     "istanbul": "^0.4.5",
-    "nyc": "^13.3.0",
+    "nyc": "^14.1.1",
     "source-map-support": "^0.5.12",
     "tape": "^4.10.1",
-    "ts-node": "^8.1.0",
-    "typescript": "^3.4.5"
+    "ts-node": "^8.2.0",
+    "typescript": "^3.5.1"
   },
   "dependencies": {
     "asn1.js": "^5.0.1",
@@ -83,7 +83,6 @@
     ],
     "reporter": [
       "text",
-      "html",
       "lcov"
     ]
   }
