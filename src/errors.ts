@@ -1,7 +1,5 @@
-'use strict'
-
 export class MissingParametersError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super()
     this.name = 'MissingParametersError'
     this.message = (message || '')
@@ -9,7 +7,7 @@ export class MissingParametersError extends Error {
 }
 
 export class InvalidTokenError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super()
     this.name = 'InvalidTokenError'
     this.message = (message || '')

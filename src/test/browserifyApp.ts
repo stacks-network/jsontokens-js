@@ -1,5 +1,3 @@
-'use strict'
-
 export {
     TokenSigner, TokenVerifier, decodeToken,
     MissingParametersError

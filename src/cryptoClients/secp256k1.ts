@@ -1,42 +1,48 @@
-'use strict'
-
-import { ec as EC } from 'elliptic'
+import { ec as EC, BNInput } from 'elliptic'
 import { createHash } from 'crypto'
 import KeyEncoder from 'key-encoder'
-import { isHexadecimal } from 'validator'
-
-import { derToJose, joseToDer } from './ecdsaSigFormatter'
+import { derToJose, joseToDer } from 'ecdsa-sig-formatter'
 import { MissingParametersError } from '../errors'
 
 export class SECP256K1Client {
+
+  static ec = new EC('secp256k1')
+  static algorithmName = 'ES256K'
+  static keyEncoder = new KeyEncoder({
+    curveParameters: [1, 3, 132, 0, 10],
+    privatePEMOptions: { label: 'EC PRIVATE KEY' },
+    publicPEMOptions: { label: 'PUBLIC KEY' },
+    curve: SECP256K1Client.ec
+  })
+
   constructor() {
   }
 
-  static createHash(signingInput) {
+  static createHash(signingInput: string | Buffer) {
     return createHash('sha256').update(signingInput).digest()
   }
 
-  static loadPrivateKey(rawPrivateKey) {
+  static loadPrivateKey(rawPrivateKey: string) {
     if (rawPrivateKey.length === 66) {
       rawPrivateKey = rawPrivateKey.slice(0, 64)
     }
     return SECP256K1Client.ec.keyFromPrivate(rawPrivateKey)
   }
 
-  static loadPublicKey(rawPublicKey) {
+  static loadPublicKey(rawPublicKey: string | Buffer) {
     return SECP256K1Client.ec.keyFromPublic(rawPublicKey, 'hex')
   }
 
-  static encodePublicKey(publicKey, originalFormat, destinationFormat) {
+  static encodePublicKey(publicKey: string | Buffer, originalFormat: 'raw' | 'pem' | 'der', destinationFormat: 'raw' | 'pem' | 'der') {
     return SECP256K1Client.keyEncoder.encodePublic(
       publicKey, originalFormat, destinationFormat)
   }
 
-  static derivePublicKey(privateKey, compressed) {
+  static derivePublicKey(privateKey: string, compressed = true) {
     if (typeof privateKey !== 'string') {
       throw Error('private key must be a string')
     }
-    if (!isHexadecimal(privateKey)) {
+    if (!(/^[0-9A-F]+$/i.test(privateKey))) {
       throw Error('private key must be a hex string')
     }
     if (privateKey.length == 66) {
@@ -46,14 +52,11 @@ export class SECP256K1Client {
     } else {
       throw Error('private key must be 66 characters or less')
     }
-    if (compressed === undefined) {
-      compressed = true
-    }
     const keypair = SECP256K1Client.ec.keyFromPrivate(privateKey)
     return keypair.getPublic(compressed, 'hex')
   }
 
-  static signHash(signingInputHash, rawPrivateKey, format='jose') {
+  static signHash(signingInputHash: string | Buffer, rawPrivateKey: string, format = 'jose') {
     // make sure the required parameters are provided
     if (!(signingInputHash && rawPrivateKey)) {
       throw new MissingParametersError(
@@ -74,13 +77,13 @@ export class SECP256K1Client {
       throw Error('Invalid signature format')
     }
   }
-  
-  static loadSignature(joseSignature) {
+
+  static loadSignature(joseSignature: string | Buffer) {
     // create and return the DER-formatted signature buffer
     return joseToDer(joseSignature, 'ES256')
   }
 
-  static verifyHash(signingInputHash, derSignatureBuffer, rawPublicKey) {
+  static verifyHash(signingInputHash: BNInput, derSignatureBuffer: string | Buffer, rawPublicKey: string | Buffer) {
     // make sure the required parameters are provided
     if (!(signingInputHash && derSignatureBuffer && rawPublicKey)) {
       throw new MissingParametersError(
@@ -89,15 +92,7 @@ export class SECP256K1Client {
     // prepare the public key
     const publicKeyObject = SECP256K1Client.loadPublicKey(rawPublicKey)
     // verify the token
-    return publicKeyObject.verify(signingInputHash, derSignatureBuffer)
+    return publicKeyObject.verify(signingInputHash, derSignatureBuffer as any)
   }
 }
 
-SECP256K1Client.algorithmName = 'ES256K'
-SECP256K1Client.ec = new EC('secp256k1')
-SECP256K1Client.keyEncoder = new KeyEncoder({
-    curveParameters: [1, 3, 132, 0, 10],
-    privatePEMOptions: {label: 'EC PRIVATE KEY'},
-    publicPEMOptions: {label: 'PUBLIC KEY'},
-    curve: SECP256K1Client.ec
-})
