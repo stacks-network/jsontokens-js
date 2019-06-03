@@ -1,7 +1,6 @@
 import { ec as EC, BNInput } from 'elliptic'
 import { createHash } from 'crypto'
 import KeyEncoder from 'key-encoder'
-import { isHexadecimal } from 'validator'
 import { derToJose, joseToDer } from 'ecdsa-sig-formatter'
 import { MissingParametersError } from '../errors'
 
@@ -34,7 +33,7 @@ export class SECP256K1Client {
     return SECP256K1Client.ec.keyFromPublic(rawPublicKey, 'hex')
   }
 
-  static encodePublicKey(publicKey: string | Buffer, originalFormat: string, destinationFormat: string) {
+  static encodePublicKey(publicKey: string | Buffer, originalFormat: 'raw' | 'pem' | 'der', destinationFormat: 'raw' | 'pem' | 'der') {
     return SECP256K1Client.keyEncoder.encodePublic(
       publicKey, originalFormat, destinationFormat)
   }
@@ -43,7 +42,7 @@ export class SECP256K1Client {
     if (typeof privateKey !== 'string') {
       throw Error('private key must be a string')
     }
-    if (!isHexadecimal(privateKey)) {
+    if (!(/^[0-9A-F]+$/i.test(privateKey))) {
       throw Error('private key must be a hex string')
     }
     if (privateKey.length == 66) {
