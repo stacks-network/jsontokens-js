@@ -1,6 +1,6 @@
 {
   "name": "jsontokens",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
   "scripts": {
@@ -38,7 +38,6 @@
   },
   "homepage": "https://github.com/blockstack/jsontokens-js#readme",
   "devDependencies": {
-    "@types/elliptic": "^6.4.6",
     "@types/node": "^10.14.6",
     "@types/tape": "^4.2.33",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
@@ -53,11 +52,12 @@
     "typescript": "^3.5.1"
   },
   "dependencies": {
+    "@types/elliptic": "^6.4.9",
     "asn1.js": "^5.0.1",
     "base64url": "^3.0.1",
     "ecdsa-sig-formatter": "^1.0.11",
     "elliptic": "^6.4.1",
-    "key-encoder": "^2.0.1"
+    "key-encoder": "^2.0.2"
   },
   "files": [
     "lib/",
