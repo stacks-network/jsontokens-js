@@ -1,4 +1,4 @@
-import test from 'tape'
+import * as test from 'tape'
 import base64url from 'base64url'
 
 import {
