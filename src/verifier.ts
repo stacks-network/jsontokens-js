@@ -26,23 +26,23 @@ export class TokenVerifier {
         this.rawPublicKey = rawPublicKey
     }
 
-    verify(token: string | SignedToken) {
+    verify(token: string | SignedToken): Promise<boolean> {
         if (typeof token === 'string') {
             return this.verifyCompact(token)
         } else if (typeof token === 'object') {
             return this.verifyExpanded(token)
         } else {
-            return false
+            return Promise.resolve(false)
         }
     }
 
-    verifyCompact(token: string) {
+    async verifyCompact(token: string): Promise<boolean> {
         // decompose the token into parts
         const tokenParts = token.split('.')
 
         // calculate the signing input hash
         const signingInput = tokenParts[0] + '.' + tokenParts[1]
-        const signingInputHash = this.cryptoClient.createHash(signingInput)
+        const signingInputHash = await this.cryptoClient.createHash(signingInput)
 
         // extract the signature as a DER array
         const derSignatureBuffer = this.cryptoClient.loadSignature(tokenParts[2])
@@ -52,12 +52,12 @@ export class TokenVerifier {
             signingInputHash, derSignatureBuffer, this.rawPublicKey)
     }
 
-    verifyExpanded(token: SignedToken) {
+    async verifyExpanded(token: SignedToken): Promise<boolean> {
         const signingInput = [
             token['header'].join('.'),
             base64url.encode(token['payload'])
         ].join('.')
-        const signingInputHash = this.cryptoClient.createHash(signingInput)
+        const signingInputHash = await this.cryptoClient.createHash(signingInput)
 
         let verified = true
 

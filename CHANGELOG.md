@@ -4,6 +4,11 @@ All notable changes to the project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0]
+### Changed
+- Web Crypto API used for hashing, if available. Otherwise uses the Node.js `crypto` module. 
+- Several functions are now async promises. 
+
 ## [2.0.3]
 ### Changed
 - No longer exporting buggy `@types/bn.js` package. Lib consumers no longer require enabling

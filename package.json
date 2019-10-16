@@ -1,10 +1,10 @@
 {
   "name": "jsontokens",
-  "version": "2.0.3",
+  "version": "3.0.0-alpha.0",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
   "scripts": {
-    "compile": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "eslint --ext .ts ./src",
     "test": "npm run lint && nyc node ./src/test/index.ts",
     "codecovUpload": "codecov",
@@ -38,18 +38,19 @@
   },
   "homepage": "https://github.com/blockstack/jsontokens-js#readme",
   "devDependencies": {
-    "@types/node": "^10.14.6",
+    "@peculiar/webcrypto": "^1.0.21",
+    "@types/node": "^12.7.12",
     "@types/tape": "^4.2.33",
-    "@typescript-eslint/eslint-plugin": "^1.9.0",
-    "@typescript-eslint/parser": "^1.9.0",
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
     "codecov": "^3.5.0",
-    "eslint": "^5.16.0",
+    "eslint": "^6.5.1",
     "istanbul": "^0.4.5",
     "nyc": "^14.1.1",
-    "source-map-support": "^0.5.12",
-    "tape": "^4.10.1",
-    "ts-node": "^8.2.0",
-    "typescript": "^3.5.1"
+    "source-map-support": "^0.5.13",
+    "tape": "^4.11.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
   },
   "dependencies": {
     "@types/elliptic": "^6.4.9",

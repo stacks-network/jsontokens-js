@@ -41,11 +41,12 @@ export function runSECP256k1Tests() {
     const message = 'Hello, world!'
     const referenceSignature = '3046022100997b6210d959e67ad9cee01589d01daf0fe77ce0f002d040d769171c33504860022100e35a03d2354074d7e49d0499568e331be39af901a543d1731ea1ff8f423f21ab'
 
-    const hash = secp256k1.createHash(message)
-    const signature = secp256k1.signHash(hash, privateKey, 'der')
+    secp256k1.createHash(message).then(hash => {
+      const signature = secp256k1.signHash(hash, privateKey, 'der')
 
-    t.ok(signature, 'signature should have been created')
-    t.equal(typeof signature, 'string', 'signature should be a string')
-    t.equal(signature, referenceSignature, 'signature should match reference value')
+      t.ok(signature, 'signature should have been created')
+      t.equal(typeof signature, 'string', 'signature should be a string')
+      t.equal(signature, referenceSignature, 'signature should match reference value')
+    })
   })
 }

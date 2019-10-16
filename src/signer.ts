@@ -59,17 +59,17 @@ export class TokenSigner {
         return Object.assign({}, defaultHeader, header)
     }
 
-    sign(payload: any): string;
-    sign(payload: any, expanded: undefined): string;
-    sign(payload: any, expanded: false, customHeader?: any): string;
-    sign(payload: any, expanded: true, customHeader?: any): SignedToken;
-    sign(payload: any, expanded: boolean = false, customHeader: any = {}): string | SignedToken {
+    sign(payload: any): Promise<string>;
+    sign(payload: any, expanded: undefined): Promise<string>;
+    sign(payload: any, expanded: false, customHeader?: any): Promise<string>;
+    sign(payload: any, expanded: true, customHeader?: any): Promise<SignedToken>;
+    async sign(payload: any, expanded: boolean = false, customHeader: any = {}): Promise<string | SignedToken> {
         // generate the token header
         const header = this.header(customHeader)
 
         // prepare the message to be signed
         const signingInput = createSigningInput(payload, header)
-        const signingInputHash = this.cryptoClient.createHash(signingInput)
+        const signingInputHash = await this.cryptoClient.createHash(signingInput)
 
         // sign the message and add in the signature
         const signature = this.cryptoClient.signHash(

@@ -28,27 +28,28 @@ export function runMainTests() {
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
         t.ok(tokenSigner, 'token signer should have been created')
 
-        const token = tokenSigner.sign(sampleDecodedToken.payload)
-        t.ok(token, 'token should have been created')
-        t.equal(typeof token, 'string', 'token should be a string')
-        t.equal(token.split('.').length, 3, 'token should have 3 parts')
-        //console.log(token)
+        tokenSigner.sign(sampleDecodedToken.payload).then(token => {
+            t.ok(token, 'token should have been created')
+            t.equal(typeof token, 'string', 'token should be a string')
+            t.equal(token.split('.').length, 3, 'token should have 3 parts')
+            //console.log(token)
 
-        const decodedToken = decodeToken(token)
-        t.equal(
-            JSON.stringify(decodedToken.header),
-            JSON.stringify(sampleDecodedToken.header),
-            'decodedToken header should match the reference header'
-        )
-        t.equal(
-            JSON.stringify(decodedToken.payload),
-            JSON.stringify(sampleDecodedToken.payload),
-            'decodedToken payload should match the reference payload'
-        )
+            const decodedToken = decodeToken(token)
+            t.equal(
+                JSON.stringify(decodedToken.header),
+                JSON.stringify(sampleDecodedToken.header),
+                'decodedToken header should match the reference header'
+            )
+            t.equal(
+                JSON.stringify(decodedToken.payload),
+                JSON.stringify(sampleDecodedToken.payload),
+                'decodedToken payload should match the reference payload'
+            )
 
-        t.throws(() => {
-            new TokenSigner('ES256K', undefined) 
-        }, /MissingParametersError/, 'Should throw MissingParametersError')
+            t.throws(() => {
+                new TokenSigner('ES256K', undefined) 
+            }, /MissingParametersError/, 'Should throw MissingParametersError')
+        })
     })
 
 
@@ -58,29 +59,31 @@ export function runMainTests() {
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
         t.ok(tokenSigner, 'token signer should have been created')
 
-        const token = tokenSigner.sign(sampleDecodedToken.payload, undefined, { test: 'TestHeader' })
-        t.ok(token, 'token should have been created')
-        t.equal(typeof token, 'string', 'token should be a string')
-        t.equal(token.split('.').length, 3, 'token should have 3 parts')
-        //console.log(token)
+        tokenSigner.sign(sampleDecodedToken.payload, undefined, { test: 'TestHeader' })
+        .then(token => {
+            t.ok(token, 'token should have been created')
+            t.equal(typeof token, 'string', 'token should be a string')
+            t.equal(token.split('.').length, 3, 'token should have 3 parts')
+            //console.log(token)
 
-        const decodedToken = decodeToken(token)
-        t.equal(
-            JSON.stringify(decodedToken.header),
-            JSON.stringify(Object.assign({},
-                                         sampleDecodedToken.header,
-                                         { test: 'TestHeader' })),
-            'decodedToken header should match the reference header'
-        )
-        t.equal(
-            JSON.stringify(decodedToken.payload),
-            JSON.stringify(sampleDecodedToken.payload),
-            'decodedToken payload should match the reference payload'
-        )
+            const decodedToken = decodeToken(token)
+            t.equal(
+                JSON.stringify(decodedToken.header),
+                JSON.stringify(Object.assign({},
+                                            sampleDecodedToken.header,
+                                            { test: 'TestHeader' })),
+                'decodedToken header should match the reference header'
+            )
+            t.equal(
+                JSON.stringify(decodedToken.payload),
+                JSON.stringify(sampleDecodedToken.payload),
+                'decodedToken payload should match the reference payload'
+            )
 
-        t.throws(() => {
-          new TokenSigner('ES256K', undefined)
-        }, /MissingParametersError/, 'Should throw MissingParametersError')
+            t.throws(() => {
+                new TokenSigner('ES256K', undefined)
+            }, /MissingParametersError/, 'Should throw MissingParametersError')
+        })
     })
 
     test('createUnsecuredToken', (t) => {
@@ -103,13 +106,17 @@ export function runMainTests() {
         const tokenVerifier = new TokenVerifier('ES256K', rawPublicKey)
         t.ok(tokenVerifier, 'token verifier should have been created')
 
-        const verified = tokenVerifier.verify(sampleToken)
-        t.equal(verified, true, 'token should have been verified')
-
-        const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
-        const newToken = tokenSigner.sign(sampleDecodedToken.payload)
-        const newTokenVerified = tokenVerifier.verify(newToken)
-        t.equal(newTokenVerified, true, 'token should have been verified')
+        tokenVerifier.verify(sampleToken).then(verified => {
+            t.equal(verified, true, 'token should have been verified')
+        })
+        .then(() => {
+            const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
+            return tokenSigner.sign(sampleDecodedToken.payload)
+        })
+        .then(newToken => tokenVerifier.verify(newToken))
+        .then(newTokenVerified => {
+            t.equal(newTokenVerified, true, 'token should have been verified')
+        })
     })
 
     test('decodeToken', (t) => {
@@ -125,20 +132,25 @@ export function runMainTests() {
     })
 
     test('expandedToken', (t) => {
-        t.plan(3)
+        t.plan(4)
 
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
         const tokenVerifier = new TokenVerifier('ES256K', rawPublicKey)
 
-        const token = tokenSigner.sign(sampleDecodedToken.payload, true)
-        t.ok(token, 'expanded token should have been created')
-        t.equal(typeof token, 'object', 'expanded token should be an Object')
-
-        console.log(JSON.stringify(token))
-
-        const verified = tokenVerifier.verify(token)
-        t.equal(verified, true, 'token should have been verified')
-
         tokenSigner.sign(sampleDecodedToken.payload, true)
+        .then(token => {
+            t.ok(token, 'expanded token should have been created')
+            t.equal(typeof token, 'object', 'expanded token should be an Object')
+            console.log(JSON.stringify(token))
+            return token
+        })
+        .then(token => tokenVerifier.verify(token))
+        .then(verified => {
+            t.equal(verified, true, 'token should have been verified')
+        })
+        .then(() => tokenSigner.sign(sampleDecodedToken.payload, true))
+        .then(signedToken => {
+            t.ok(signedToken, 'token should have been signed')
+        })
     })
 }
