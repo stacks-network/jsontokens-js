@@ -1,11 +1,26 @@
-import * as test from 'tape'
 import base64url from 'base64url'
 
 import {
-    TokenSigner, TokenVerifier, decodeToken, createUnsecuredToken
+    TokenSigner, TokenVerifier, decodeToken, createUnsecuredToken, MissingParametersError
 } from '../index'
 
-export function runMainTests() {
+import * as webcrypto from '@peculiar/webcrypto'
+
+describe('main tests - node.js crypto', () => {
+    runMainTests()
+})
+
+describe('main tests - web crypto', () => {
+    beforeAll(() => {
+        Object.defineProperty(global, 'crypto', { value: new webcrypto.Crypto() })
+    })
+    afterAll(() => {
+        delete (global as any)['crypto']
+    })
+    runMainTests()
+})
+
+function runMainTests() {
     const rawPrivateKey = '278a5de700e29faae8e40e366ec5012b5ec63d36ec77e8a2417154cc1d25383f'
     const rawPublicKey = '03fdd57adec3d438ea237fe46b33ee1e016eda6b585c3e27ea66686c2ea5358479'
     const sampleToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpc3N1ZWRBdCI6IjE0NDA3MTM0MTQuODUiLCJjaGFsbGVuZ2UiOiI3Y2Q5ZWQ1ZS1iYjBlLTQ5ZWEtYTMyMy1mMjhiZGUzYTA1NDkiLCJpc3N1ZXIiOnsicHVibGljS2V5IjoiMDNmZGQ1N2FkZWMzZDQzOGVhMjM3ZmU0NmIzM2VlMWUwMTZlZGE2YjU4NWMzZTI3ZWE2NjY4NmMyZWE1MzU4NDc5IiwiY2hhaW5QYXRoIjoiYmQ2Mjg4NWVjM2YwZTM4MzgwNDMxMTVmNGNlMjVlZWRkMjJjYzg2NzExODAzZmIwYzE5NjAxZWVlZjE4NWUzOSIsInB1YmxpY0tleWNoYWluIjoieHB1YjY2MU15TXdBcVJiY0ZRVnJRcjRRNGtQamFQNEpqV2FmMzlmQlZLalBkSzZvR0JheUU0NkdBbUt6bzVVRFBRZExTTTlEdWZaaVA4ZWF1eTU2WE51SGljQnlTdlpwN0o1d3N5UVZwaTJheHpaIiwiYmxvY2tjaGFpbmlkIjoicnlhbiJ9fQ.DUf6Rnw6FBKv4Q3y95RX7rR6HG_L1Va96ThcIYTycOf1j_bf9WleLsOyiZ-35Qfw7FgDnW7Utvz4sNjdWOSnhQ'
@@ -22,135 +37,82 @@ export function runMainTests() {
           signature: 'oO7ROPKq3T3X0azAXzHsf6ub6CYy5nUUFDoy8MS22B3TlYisqsBrRtzWIQcSYiFXLytrXwAdt6vjehj3OFioDQ'
         }
 
-    test('TokenSigner', (t) => {
-        t.plan(7)
-
+    test('TokenSigner', async () => {
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
-        t.ok(tokenSigner, 'token signer should have been created')
+        expect(tokenSigner).toBeTruthy()
 
-        tokenSigner.sign(sampleDecodedToken.payload).then(token => {
-            t.ok(token, 'token should have been created')
-            t.equal(typeof token, 'string', 'token should be a string')
-            t.equal(token.split('.').length, 3, 'token should have 3 parts')
-            //console.log(token)
+        const token = await tokenSigner.sign(sampleDecodedToken.payload)
+        expect(token).toBeTruthy()
+        expect(typeof token).toBe('string')
+        expect(token.split('.').length).toBe(3)
 
-            const decodedToken = decodeToken(token)
-            t.equal(
-                JSON.stringify(decodedToken.header),
-                JSON.stringify(sampleDecodedToken.header),
-                'decodedToken header should match the reference header'
-            )
-            t.equal(
-                JSON.stringify(decodedToken.payload),
-                JSON.stringify(sampleDecodedToken.payload),
-                'decodedToken payload should match the reference payload'
-            )
-
-            t.throws(() => {
-                new TokenSigner('ES256K', undefined) 
-            }, /MissingParametersError/, 'Should throw MissingParametersError')
-        })
+        const decodedToken = decodeToken(token)
+        expect(JSON.stringify(decodedToken.header)).toBe(JSON.stringify(sampleDecodedToken.header))
+        expect(() => new TokenSigner('ES256K', undefined)).toThrowError(MissingParametersError)
     })
 
 
-    test('TokenSigner custom header', (t) => {
-        t.plan(7)
-
+    test('TokenSigner custom header', async () => {
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
-        t.ok(tokenSigner, 'token signer should have been created')
+        expect(tokenSigner).toBeTruthy()
 
-        tokenSigner.sign(sampleDecodedToken.payload, undefined, { test: 'TestHeader' })
-        .then(token => {
-            t.ok(token, 'token should have been created')
-            t.equal(typeof token, 'string', 'token should be a string')
-            t.equal(token.split('.').length, 3, 'token should have 3 parts')
-            //console.log(token)
+        const token = await tokenSigner.sign(sampleDecodedToken.payload, undefined, { test: 'TestHeader' })
+        expect(token).toBeTruthy()
+        expect(typeof token).toBe('string')
+        expect(token.split('.').length).toBe(3)
 
-            const decodedToken = decodeToken(token)
-            t.equal(
-                JSON.stringify(decodedToken.header),
-                JSON.stringify(Object.assign({},
-                                            sampleDecodedToken.header,
-                                            { test: 'TestHeader' })),
-                'decodedToken header should match the reference header'
-            )
-            t.equal(
-                JSON.stringify(decodedToken.payload),
-                JSON.stringify(sampleDecodedToken.payload),
-                'decodedToken payload should match the reference payload'
-            )
-
-            t.throws(() => {
-                new TokenSigner('ES256K', undefined)
-            }, /MissingParametersError/, 'Should throw MissingParametersError')
-        })
+        const decodedToken = decodeToken(token)
+        expect(JSON.stringify(decodedToken.header)).toBe(JSON.stringify(Object.assign({},
+            sampleDecodedToken.header,
+            { test: 'TestHeader' })))
+        
+        expect(JSON.stringify(decodedToken.payload)).toBe(JSON.stringify(sampleDecodedToken.payload))
+        expect(() => new TokenSigner('ES256K', undefined)).toThrowError(MissingParametersError)
     })
 
-    test('createUnsecuredToken', (t) => {
-        t.plan(3)
-
+    test('createUnsecuredToken', async () => {
         const unsecuredToken = createUnsecuredToken(
             sampleDecodedToken.payload)
-        t.ok(unsecuredToken, 'unsecured token should have been created')
-        t.equal(unsecuredToken,
-            base64url.encode(JSON.stringify({typ: 'JWT', alg: 'none'})) + '.' + sampleToken.split('.')[1] + '.',
-            'unsigned token should equal reference')
+        expect(unsecuredToken).toBeTruthy()
+        expect(unsecuredToken)
+            .toBe(base64url.encode(JSON.stringify({typ: 'JWT', alg: 'none'})) + '.' + sampleToken.split('.')[1] + '.')
 
         const decodedToken = decodeToken(unsecuredToken)
-        t.ok(decodedToken, 'token should have been decoded')
+        expect(decodedToken).toBeTruthy()
     })
 
-    test('TokenVerifier', (t) => {
-        t.plan(3)
-
+    test('TokenVerifier', async () => {
         const tokenVerifier = new TokenVerifier('ES256K', rawPublicKey)
-        t.ok(tokenVerifier, 'token verifier should have been created')
+        expect(tokenVerifier).toBeTruthy()
 
-        tokenVerifier.verify(sampleToken).then(verified => {
-            t.equal(verified, true, 'token should have been verified')
-        })
-        .then(() => {
-            const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
-            return tokenSigner.sign(sampleDecodedToken.payload)
-        })
-        .then(newToken => tokenVerifier.verify(newToken))
-        .then(newTokenVerified => {
-            t.equal(newTokenVerified, true, 'token should have been verified')
-        })
+        const verified = await tokenVerifier.verify(sampleToken)
+        expect(verified).toBe(true)
+
+        const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
+        const newToken = await tokenSigner.sign(sampleDecodedToken.payload)
+        expect(newToken).toBeTruthy()
+        const newTokenVerified = await tokenVerifier.verify(newToken)
+        expect(newTokenVerified).toBe(true)
     })
 
-    test('decodeToken', (t) => {
-        t.plan(2)
-
+    test('decodeToken', () => {
         const decodedToken = decodeToken(sampleToken)
-        t.ok(decodedToken, 'token should have been decoded')
-        t.equal(
-            JSON.stringify(decodedToken.payload),
-            JSON.stringify(sampleDecodedToken.payload),
-            'decodedToken payload should match the reference payload'
-        )
+        expect(decodeToken).toBeTruthy()
+        expect(JSON.stringify(decodedToken.payload)).toBe(JSON.stringify(sampleDecodedToken.payload))
     })
 
-    test('expandedToken', (t) => {
-        t.plan(4)
-
+    test('expandedToken', async () => {
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
         const tokenVerifier = new TokenVerifier('ES256K', rawPublicKey)
 
-        tokenSigner.sign(sampleDecodedToken.payload, true)
-        .then(token => {
-            t.ok(token, 'expanded token should have been created')
-            t.equal(typeof token, 'object', 'expanded token should be an Object')
-            console.log(JSON.stringify(token))
-            return token
-        })
-        .then(token => tokenVerifier.verify(token))
-        .then(verified => {
-            t.equal(verified, true, 'token should have been verified')
-        })
-        .then(() => tokenSigner.sign(sampleDecodedToken.payload, true))
-        .then(signedToken => {
-            t.ok(signedToken, 'token should have been signed')
-        })
+        const token = await tokenSigner.sign(sampleDecodedToken.payload, true)
+        expect(token).toBeTruthy()
+        expect(typeof token).toBe('object')
+        
+        const verified = await tokenVerifier.verify(token)
+        expect(verified).toBe(true)
+
+        const signedToken = await tokenSigner.sign(sampleDecodedToken.payload, true)
+        expect(signedToken).toBeTruthy()
     })
 }

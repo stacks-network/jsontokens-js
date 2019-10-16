@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "lint": "eslint --ext .ts ./src",
-    "test": "npm run lint && nyc node ./src/test/index.ts",
+    "test": "npm run lint && jest",
     "codecovUpload": "codecov",
     "prepublishOnly": "npm run compile",
     "prepare": "npm run compile"
@@ -39,16 +39,20 @@
   "homepage": "https://github.com/blockstack/jsontokens-js#readme",
   "devDependencies": {
     "@peculiar/webcrypto": "^1.0.21",
+    "@types/jest": "^24.0.19",
     "@types/node": "^12.7.12",
     "@types/tape": "^4.2.33",
     "@typescript-eslint/eslint-plugin": "^2.4.0",
     "@typescript-eslint/parser": "^2.4.0",
     "codecov": "^3.5.0",
     "eslint": "^6.5.1",
+    "eslint-plugin-jest": "^22.19.0",
     "istanbul": "^0.4.5",
+    "jest": "^24.9.0",
     "nyc": "^14.1.1",
     "source-map-support": "^0.5.13",
     "tape": "^4.11.0",
+    "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.4"
   },
