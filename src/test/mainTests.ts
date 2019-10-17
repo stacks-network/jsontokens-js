@@ -48,6 +48,7 @@ function runMainTests() {
 
         const decodedToken = decodeToken(token)
         expect(JSON.stringify(decodedToken.header)).toBe(JSON.stringify(sampleDecodedToken.header))
+        expect(JSON.stringify(decodedToken.payload)).toBe(JSON.stringify(sampleDecodedToken.payload))
         expect(() => new TokenSigner('ES256K', undefined)).toThrowError(MissingParametersError)
     })
 
