@@ -61,9 +61,10 @@ export class TokenSigner {
         return Object.assign({}, defaultHeader, header)
     }
     
+    sign(payload: Json): string;
     sign(payload: Json, expanded: true, customHeader?: Json): SignedToken;
     sign(payload: Json, expanded: false, customHeader?: Json): string;
-    sign(payload: Json, expanded: boolean, customHeader: Json = {}): SignedToken | string {
+    sign(payload: Json, expanded: boolean = false, customHeader: Json = {}): SignedToken | string {
         // generate the token header
         const header = this.header(customHeader)
 
@@ -73,6 +74,7 @@ export class TokenSigner {
         return this.createWithSignedHash(payload, expanded, header, signingInput, signingInputHash)
     }
 
+    signAsync(payload: Json): Promise<string>;
     signAsync(payload: Json, expanded: true, customHeader?: Json): Promise<SignedToken>;
     signAsync(payload: Json, expanded: false, customHeader?: Json): Promise<string>;
     async signAsync(payload: Json, expanded: boolean = false, customHeader: Json = {}) {
