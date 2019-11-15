@@ -6,8 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.0]
 ### Changed
-- Web Crypto API used for hashing, if available. Otherwise uses the Node.js `crypto` module. 
-- Several functions are now async promises. 
+- Added async functions that use Web Crypto API used for hashing, if available. Otherwise uses the Node.js `crypto` module. 
 
 ## [2.0.3]
 ### Changed
