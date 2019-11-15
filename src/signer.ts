@@ -1,8 +1,10 @@
 import base64url from 'base64url'
 import { cryptoClients, SECP256K1Client } from './cryptoClients'
 import { MissingParametersError } from './errors'
+import { Json } from './decode'
+import { hashSha256, hashSha256Async } from './cryptoClients/sha256'
 
-function createSigningInput(payload: any, header: any) {
+function createSigningInput(payload: Json, header: Json) {
     const tokenParts = []
 
     // add in the header
@@ -20,7 +22,7 @@ function createSigningInput(payload: any, header: any) {
     return signingInput
 }
 
-export function createUnsecuredToken(payload: any) {
+export function createUnsecuredToken(payload: Json) {
     const header = {typ: 'JWT', alg: 'none'}
     return createSigningInput(payload, header) + '.'
 }
@@ -58,25 +60,45 @@ export class TokenSigner {
                                 alg: this.cryptoClient.algorithmName }
         return Object.assign({}, defaultHeader, header)
     }
-
-    sign(payload: any): Promise<string>;
-    sign(payload: any, expanded: undefined): Promise<string>;
-    sign(payload: any, expanded: false, customHeader?: any): Promise<string>;
-    sign(payload: any, expanded: true, customHeader?: any): Promise<SignedToken>;
-    async sign(payload: any, expanded: boolean = false, customHeader: any = {}): Promise<string | SignedToken> {
+    
+    sign(payload: Json, expanded: true, customHeader?: Json): SignedToken;
+    sign(payload: Json, expanded: false, customHeader?: Json): string;
+    sign(payload: Json, expanded: boolean, customHeader: Json = {}): SignedToken | string {
         // generate the token header
         const header = this.header(customHeader)
 
         // prepare the message to be signed
         const signingInput = createSigningInput(payload, header)
-        const signingInputHash = await this.cryptoClient.createHash(signingInput)
+        const signingInputHash = hashSha256(signingInput)
+        return this.createWithSignedHash(payload, expanded, header, signingInput, signingInputHash)
+    }
 
+    signAsync(payload: Json, expanded: true, customHeader?: Json): Promise<SignedToken>;
+    signAsync(payload: Json, expanded: false, customHeader?: Json): Promise<string>;
+    async signAsync(payload: Json, expanded: boolean = false, customHeader: Json = {}) {
+        // generate the token header
+        const header = this.header(customHeader)
+
+        // prepare the message to be signed
+        const signingInput = createSigningInput(payload, header)
+        const signingInputHash = await hashSha256Async(signingInput)
+        return this.createWithSignedHash(payload, expanded, header, signingInput, signingInputHash)
+    }
+
+    createWithSignedHash(
+        payload: Json, 
+        expanded: boolean, 
+        header: { typ: string; alg: string }, 
+        signingInput: string, 
+        signingInputHash: Buffer
+    ):
+        SignedToken | string {
         // sign the message and add in the signature
         const signature = this.cryptoClient.signHash(
             signingInputHash, this.rawPrivateKey)
 
         if (expanded) {
-            return {
+            const signedToken: SignedToken = {
                 'header': [
                     base64url.encode(JSON.stringify(header))
                 ],
@@ -85,6 +107,7 @@ export class TokenSigner {
                     signature
                 ]
             }
+            return signedToken
         } else {
             return [signingInput, signature].join('.')
         }

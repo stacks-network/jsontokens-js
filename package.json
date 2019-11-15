@@ -4,7 +4,7 @@
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -b tsconfig.build.json",
     "lint": "eslint --ext .ts ./src",
     "test": "npm run lint && jest",
     "codecovUpload": "codecov",
@@ -39,18 +39,19 @@
   "homepage": "https://github.com/blockstack/jsontokens-js#readme",
   "devDependencies": {
     "@peculiar/webcrypto": "^1.0.21",
-    "@types/jest": "^24.0.19",
-    "@types/node": "^12.7.12",
-    "@typescript-eslint/eslint-plugin": "^2.4.0",
-    "@typescript-eslint/parser": "^2.4.0",
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.12.7",
+    "@types/sha.js": "^2.4.0",
+    "@typescript-eslint/eslint-plugin": "^2.7.0",
+    "@typescript-eslint/parser": "^2.7.0",
     "codecov": "^3.6.1",
-    "eslint": "^6.5.1",
-    "eslint-plugin-jest": "^22.19.0",
+    "eslint": "^6.6.0",
+    "eslint-plugin-jest": "^23.0.3",
     "jest": "^24.9.0",
-    "source-map-support": "^0.5.13",
+    "source-map-support": "^0.5.16",
     "ts-jest": "^24.1.0",
-    "ts-node": "^8.4.1",
-    "typescript": "^3.6.4"
+    "ts-node": "^8.5.0",
+    "typescript": "^3.7.2"
   },
   "dependencies": {
     "@types/elliptic": "^6.4.9",
@@ -58,7 +59,7 @@
     "base64url": "^3.0.1",
     "ecdsa-sig-formatter": "^1.0.11",
     "elliptic": "^6.4.1",
-    "key-encoder": "^2.0.3"
+    "sha.js": "^2.4.11"
   },
   "files": [
     "lib/",

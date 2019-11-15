@@ -1,5 +1,4 @@
 import { ec as EC, BNInput } from 'elliptic'
-import KeyEncoder from 'key-encoder'
 import { derToJose, joseToDer } from 'ecdsa-sig-formatter'
 import { MissingParametersError } from '../errors'
 
@@ -7,49 +6,8 @@ export class SECP256K1Client {
 
   static ec = new EC('secp256k1')
   static algorithmName = 'ES256K'
-  static keyEncoder = new KeyEncoder({
-    curveParameters: [1, 3, 132, 0, 10],
-    privatePEMOptions: { label: 'EC PRIVATE KEY' },
-    publicPEMOptions: { label: 'PUBLIC KEY' },
-    curve: SECP256K1Client.ec
-  })
 
   constructor() {
-  }
-
-  private static getHashFunction(): (signingInput: string | Buffer) => Promise<Buffer> {
-    try {
-      const isSubtleCryptoAvailable = typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined'
-      if (isSubtleCryptoAvailable) {
-        // Use the W3C Web Crypto API if available (running in a web browser).
-        return async input => {
-          const buffer = typeof input === 'string' ? Buffer.from(input) : input
-          const hash = await crypto.subtle.digest('SHA-256', buffer)
-          return Buffer.from(hash)
-        }
-      } else {
-        // Otherwise try loading the Node.js `crypto` module (running in Node.js, or an older browser with a polyfill).
-        const nodeCrypto = require('crypto') as typeof import('crypto')
-        if (!nodeCrypto.createHash) {
-          const error = new Error('`crypto` module does not contain `createHash`')
-          console.error(error)
-          throw error
-        }
-        return input => Promise.resolve(nodeCrypto.createHash('sha256').update(input).digest())
-      }
-    } catch (error) {
-      console.error(error)
-      const missingCryptoError = new Error(
-        'Crypto lib not found. Neither the global `crypto.subtle` Web Crypto API, ' + 
-        'nor the or the Node.js `require("crypto").createHash` module is available.')
-      console.error(missingCryptoError)
-      throw missingCryptoError
-    }
-  }
-
-  static createHash(signingInput: string | Buffer): Promise<Buffer> {
-    const hashFunction = this.getHashFunction()
-    return hashFunction(signingInput)
   }
 
   static loadPrivateKey(rawPrivateKey: string) {
@@ -61,11 +19,6 @@ export class SECP256K1Client {
 
   static loadPublicKey(rawPublicKey: string | Buffer) {
     return SECP256K1Client.ec.keyFromPublic(rawPublicKey, 'hex')
-  }
-
-  static encodePublicKey(publicKey: string | Buffer, originalFormat: 'raw' | 'pem' | 'der', destinationFormat: 'raw' | 'pem' | 'der') {
-    return SECP256K1Client.keyEncoder.encodePublic(
-      publicKey, originalFormat, destinationFormat)
   }
 
   static derivePublicKey(privateKey: string, compressed = true) {

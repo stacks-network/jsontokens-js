@@ -7,12 +7,42 @@ import {
 import * as webcrypto from '@peculiar/webcrypto'
 
 describe('main tests - node.js crypto', () => {
+    let origGlobalCrypto: { defined: boolean, value: any }
+    beforeAll(() => {
+        origGlobalCrypto = {
+            defined: 'crypto' in global,
+            value: (global as any)['crypto']
+        }
+        delete (global as any)['crypto'];
+        (global as any)['crypto'] = new webcrypto.Crypto()
+    })
+    afterAll(() => {
+        if (origGlobalCrypto.defined) {
+            (global as any)['crypto']  = origGlobalCrypto.value
+        } else {
+            delete (global as any)['crypto'] 
+        }
+    })
+    runMainTests()
+})
+
+describe('main tests - sha.js crypto', () => {
+    let origCreateHash: typeof import('crypto').createHash
+    beforeAll(() => {
+        const nodeCrypto = require('crypto') as typeof import('crypto')
+        origCreateHash = nodeCrypto.createHash
+        delete nodeCrypto.createHash
+    })
+    afterAll(() => {
+        const nodeCrypto = require('crypto') as typeof import('crypto')
+        nodeCrypto.createHash = origCreateHash
+    })
     runMainTests()
 })
 
 describe('main tests - web crypto', () => {
     beforeAll(() => {
-        Object.defineProperty(global, 'crypto', { value: new webcrypto.Crypto() })
+        (global as any)['crypto'] = new webcrypto.Crypto()
     })
     afterAll(() => {
         delete (global as any)['crypto']
@@ -41,7 +71,9 @@ function runMainTests() {
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
         expect(tokenSigner).toBeTruthy()
 
-        const token = await tokenSigner.sign(sampleDecodedToken.payload)
+        const token = await tokenSigner.signAsync(sampleDecodedToken.payload, false)
+        const token1 = tokenSigner.sign(sampleDecodedToken.payload, false)
+        expect(token).toStrictEqual(token1)
         expect(token).toBeTruthy()
         expect(typeof token).toBe('string')
         expect(token.split('.').length).toBe(3)
@@ -57,7 +89,9 @@ function runMainTests() {
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
         expect(tokenSigner).toBeTruthy()
 
-        const token = await tokenSigner.sign(sampleDecodedToken.payload, undefined, { test: 'TestHeader' })
+        const token = await tokenSigner.signAsync(sampleDecodedToken.payload, false, { test: 'TestHeader' })
+        const token1 = tokenSigner.sign(sampleDecodedToken.payload, false, { test: 'TestHeader' })
+        expect(token).toStrictEqual(token1)
         expect(token).toBeTruthy()
         expect(typeof token).toBe('string')
         expect(token.split('.').length).toBe(3)
@@ -86,13 +120,20 @@ function runMainTests() {
         const tokenVerifier = new TokenVerifier('ES256K', rawPublicKey)
         expect(tokenVerifier).toBeTruthy()
 
-        const verified = await tokenVerifier.verify(sampleToken)
+        const verified = await tokenVerifier.verifyAsync(sampleToken)
+        const verified1 = await tokenVerifier.verify(sampleToken)
+        expect(verified).toStrictEqual(verified1)
         expect(verified).toBe(true)
 
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
-        const newToken = await tokenSigner.sign(sampleDecodedToken.payload)
+        const newToken = await tokenSigner.signAsync(sampleDecodedToken.payload, false)
+        const newToken1 = tokenSigner.sign(sampleDecodedToken.payload, false)
+        expect(newToken).toStrictEqual(newToken1)
         expect(newToken).toBeTruthy()
-        const newTokenVerified = await tokenVerifier.verify(newToken)
+
+        const newTokenVerified = await tokenVerifier.verifyAsync(newToken)
+        const newTokenVerified1 = tokenVerifier.verify(newToken)
+        expect(newTokenVerified).toStrictEqual(newTokenVerified1)
         expect(newTokenVerified).toBe(true)
     })
 
@@ -106,14 +147,20 @@ function runMainTests() {
         const tokenSigner = new TokenSigner('ES256K', rawPrivateKey)
         const tokenVerifier = new TokenVerifier('ES256K', rawPublicKey)
 
-        const token = await tokenSigner.sign(sampleDecodedToken.payload, true)
+        const token = await tokenSigner.signAsync(sampleDecodedToken.payload, true)
+        const token1 = tokenSigner.sign(sampleDecodedToken.payload, true)
+        expect(token).toStrictEqual(token1)
         expect(token).toBeTruthy()
         expect(typeof token).toBe('object')
         
-        const verified = await tokenVerifier.verify(token)
+        const verified = await tokenVerifier.verifyAsync(token)
+        const verified1 = tokenVerifier.verify(token)
+        expect(verified).toStrictEqual(verified1)
         expect(verified).toBe(true)
 
-        const signedToken = await tokenSigner.sign(sampleDecodedToken.payload, true)
+        const signedToken = await tokenSigner.signAsync(sampleDecodedToken.payload, true)
+        const signedToken1 = tokenSigner.sign(sampleDecodedToken.payload, true)
+        expect(signedToken).toStrictEqual(signedToken1)
         expect(signedToken).toBeTruthy()
     })
 }

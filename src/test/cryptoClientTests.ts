@@ -1,19 +1,8 @@
 import { SECP256K1Client as secp256k1 } from '../index'
+import { hashSha256Async } from '../cryptoClients/sha256'
 
-import * as webcrypto from '@peculiar/webcrypto'
-
-describe('SECP256k1 tests - node.js crypto', () => {
+describe('SECP256k1 tests', () => {
   runSECP256k1Tests()
-})
-
-describe('SECP256k1 tests - web crypto', () => {
-    beforeAll(() => {
-        Object.defineProperty(global, 'crypto', { value: new webcrypto.Crypto() })
-    })
-    afterAll(() => {
-        delete (global as any)['crypto']
-    })
-    runSECP256k1Tests()
 })
 
 function runSECP256k1Tests() {
@@ -52,7 +41,7 @@ function runSECP256k1Tests() {
     const message = 'Hello, world!'
     const referenceSignature = '3046022100997b6210d959e67ad9cee01589d01daf0fe77ce0f002d040d769171c33504860022100e35a03d2354074d7e49d0499568e331be39af901a543d1731ea1ff8f423f21ab'
 
-    const hash = await secp256k1.createHash(message)
+    const hash = await hashSha256Async(message)
     const signature = secp256k1.signHash(hash, privateKey, 'der')
 
     expect(signature).toBeTruthy()
