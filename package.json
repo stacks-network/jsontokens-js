@@ -1,15 +1,22 @@
 {
   "name": "jsontokens",
-  "version": "3.0.0-alpha.2",
+  "version": "3.0.0-alpha.3",
   "description": "node.js library for encoding, decoding, and verifying JSON Web Tokens (JWTs)",
   "main": "lib/index.js",
+  "unpkg": "dist/jsontokens.js",
+  "jsdelivr": "dist/jsontokens.js",
+  "browser": {
+    "crypto": false
+  },
+  "prettier": "@blockstack/prettier-config",
   "scripts": {
-    "build": "tsc -b tsconfig.build.json",
+    "webpack": "rimraf lib dist && webpack --mode=production",
+    "build": "rimraf lib && tsc -b tsconfig.build.json",
+    "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint --ext .ts ./src",
-    "test": "npm run lint && jest",
+    "test": "jest ./src/test/",
     "codecovUpload": "codecov",
-    "prepublishOnly": "npm run build",
-    "prepare": "npm run build"
+    "prepublishOnly": "npm run lint && npm run test && npm run webpack && npm run build"
   },
   "repository": {
     "type": "git",
@@ -38,20 +45,30 @@
   },
   "homepage": "https://github.com/blockstack/jsontokens-js#readme",
   "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/preset-env": "^7.7.5",
+    "@blockstack/prettier-config": "0.0.4",
     "@peculiar/webcrypto": "^1.0.21",
     "@types/jest": "^24.0.23",
     "@types/node": "^12.12.7",
     "@types/sha.js": "^2.4.0",
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
+    "babel-loader": "^8.0.6",
     "codecov": "^3.6.1",
+    "cross-env": "^6.0.3",
     "eslint": "^6.6.0",
     "eslint-plugin-jest": "^23.0.3",
     "jest": "^24.9.0",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.0",
     "source-map-support": "^0.5.16",
     "ts-jest": "^24.1.0",
+    "ts-loader": "^6.2.1",
     "ts-node": "^8.5.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   },
   "dependencies": {
     "@types/elliptic": "^6.4.9",
@@ -60,10 +77,5 @@
     "ecdsa-sig-formatter": "^1.0.11",
     "elliptic": "^6.4.1",
     "sha.js": "^2.4.11"
-  },
-  "files": [
-    "lib/",
-    "src/",
-    "README.md"
-  ]
+  }
 }
