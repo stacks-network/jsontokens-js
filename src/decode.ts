@@ -2,12 +2,12 @@ import base64url from 'base64url'
 
 export interface TokenInterface {
     header: {
-      [key: string]: any;
+      [key: string]: Json;
       alg?: string;
       typ?: string;
     };
     payload: {
-      [key: string]: any;
+      [key: string]: Json;
       iss?: string;
       jti?: string;
       iat?: string | number;
@@ -15,6 +15,14 @@ export interface TokenInterface {
     } | string;
     signature: string;
 }
+
+export type Json =
+    | string
+    | number
+    | boolean
+    | null
+    | { [property: string]: Json }
+    | Json[];
 
 export function decodeToken(token: string | TokenInterface): TokenInterface {
     if (typeof token === 'string') {
@@ -39,8 +47,8 @@ export function decodeToken(token: string | TokenInterface): TokenInterface {
             payload = base64url.decode(payload)
         }
 
-        const allHeaders: any[] = []
-        token.header.map((headerValue: string) => {
+        const allHeaders: any = [];
+        (token.header as any).map((headerValue: string) => {
             const header = JSON.parse(base64url.decode(headerValue))
             allHeaders.push(header)
         })

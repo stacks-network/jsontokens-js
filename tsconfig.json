@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
-      "target": "es6",
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "declaration": true,
-      "noImplicitAny": true,
-      "noImplicitThis": true,
-      "outDir": "lib",
-      "sourceMap": true,
-      "sourceRoot": "."
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "outDir": "lib",
+    "sourceMap": true,
+    "sourceRoot": "."
   },
   "include": [
-    "src"
-  ],
-  "exclude": [
-    "src/test/**/*"
+    "src/**/*"
   ]
 }

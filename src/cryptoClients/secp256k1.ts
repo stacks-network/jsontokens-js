@@ -1,6 +1,4 @@
 import { ec as EC, BNInput } from 'elliptic'
-import { createHash } from 'crypto'
-import KeyEncoder from 'key-encoder'
 import { derToJose, joseToDer } from 'ecdsa-sig-formatter'
 import { MissingParametersError } from '../errors'
 
@@ -8,18 +6,8 @@ export class SECP256K1Client {
 
   static ec = new EC('secp256k1')
   static algorithmName = 'ES256K'
-  static keyEncoder = new KeyEncoder({
-    curveParameters: [1, 3, 132, 0, 10],
-    privatePEMOptions: { label: 'EC PRIVATE KEY' },
-    publicPEMOptions: { label: 'PUBLIC KEY' },
-    curve: SECP256K1Client.ec
-  })
 
   constructor() {
-  }
-
-  static createHash(signingInput: string | Buffer) {
-    return createHash('sha256').update(signingInput).digest()
   }
 
   static loadPrivateKey(rawPrivateKey: string) {
@@ -31,11 +19,6 @@ export class SECP256K1Client {
 
   static loadPublicKey(rawPublicKey: string | Buffer) {
     return SECP256K1Client.ec.keyFromPublic(rawPublicKey, 'hex')
-  }
-
-  static encodePublicKey(publicKey: string | Buffer, originalFormat: 'raw' | 'pem' | 'der', destinationFormat: 'raw' | 'pem' | 'der') {
-    return SECP256K1Client.keyEncoder.encodePublic(
-      publicKey, originalFormat, destinationFormat)
   }
 
   static derivePublicKey(privateKey: string, compressed = true) {
