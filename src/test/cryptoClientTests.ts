@@ -1,4 +1,4 @@
-import test from 'tape'
+import * as test from 'tape'
 
 import { SECP256K1Client as secp256k1 } from '../index'
 
