@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
   entry: './src/index.ts',
   module: {
@@ -5,23 +7,28 @@ module.exports = {
       {
         test: /\.ts?$/,
         exclude: /node_modules/,
-        use: { loader: 'ts-loader' }
+        use: { loader: 'ts-loader' },
       },
       {
         test: /\.js$/,
         use: {
           loader: 'babel-loader',
-          options: { presets: ['@babel/preset-env'] }
-        }
-      }
-    ]
+          options: { presets: ['@babel/preset-env'] },
+        },
+      },
+    ],
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    })
+  ],
   resolve: { extensions: ['.ts', '.js'] },
   output: {
     filename: 'jsontokens.js',
     path: require('path').resolve(__dirname, 'dist'),
     library: 'jsontokens',
     libraryTarget: 'umd',
-    globalObject: 'this'
-  }
-}
+    globalObject: 'this',
+  },
+};
