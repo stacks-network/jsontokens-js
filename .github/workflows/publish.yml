@@ -1,0 +1,29 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  publish_npm:
+    name: Publish production NPM packages
+    runs-on: ubuntu-latest
+    if: "contains(github.event.head_commit.message, 'chore: version bump')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare repository
+        run: git checkout
+      - name: Set Node Version
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.14.2
+      - name: Install deps
+        run: npm ci
+      - name: Setup .npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+      - name: Publish
+        run: npm publish
