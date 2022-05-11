@@ -16,11 +16,12 @@
     "lint": "eslint --ext .ts ./src",
     "test": "jest ./src/test/",
     "codecovUpload": "codecov",
-    "prepublishOnly": "npm run lint && npm run test && npm run webpack && npm run build"
+    "prepublishOnly": "npm run lint && npm run test && npm run webpack && npm run build",
+    "prepare": "husky install .github/husky"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/blockstack/jsontokens-js.git"
+    "url": "git+https://github.com/stacks-network/jsontokens-js.git"
   },
   "keywords": [
     "jwt",
@@ -41,13 +42,15 @@
   "author": "Blockstack PBC",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/blockstack/jsontokens-js/issues"
+    "url": "https://github.com/stacks-network/jsontokens-js/issues"
   },
-  "homepage": "https://github.com/blockstack/jsontokens-js#readme",
+  "homepage": "https://github.com/stacks-network/jsontokens-js#readme",
   "devDependencies": {
     "@babel/core": "^7.7.5",
     "@babel/preset-env": "^7.7.5",
     "@blockstack/prettier-config": "0.0.4",
+    "@commitlint/cli": "^16.2.4",
+    "@commitlint/config-conventional": "^16.2.4",
     "@peculiar/webcrypto": "^1.0.21",
     "@types/jest": "^24.0.23",
     "@types/node": "^12.12.7",
@@ -59,6 +62,7 @@
     "cross-env": "^6.0.3",
     "eslint": "^6.6.0",
     "eslint-plugin-jest": "^23.0.3",
+    "husky": "^8.0.1",
     "jest": "^24.9.0",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.0",
@@ -77,5 +81,17 @@
     "ecdsa-sig-formatter": "^1.0.11",
     "elliptic": "^6.4.1",
     "sha.js": "^2.4.11"
+  },
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "release": {
+    "extends": "./.github/releaserc.json"
   }
 }
