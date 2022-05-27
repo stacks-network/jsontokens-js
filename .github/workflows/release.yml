@@ -42,6 +42,7 @@ jobs:
           SEMANTIC_RELEASE_PACKAGE: ${{ github.event.repository.name }}
         with:
           extra_plugins: |
+            @semantic-release/commit-analyzer
             @semantic-release/changelog
             @semantic-release/exec
             @semantic-release/git
