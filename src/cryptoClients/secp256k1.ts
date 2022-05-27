@@ -1,81 +1,63 @@
-import { ec as EC, BNInput } from 'elliptic'
-import { derToJose, joseToDer } from 'ecdsa-sig-formatter'
-import { MissingParametersError } from '../errors'
+import { hmac } from '@noble/hashes/hmac';
+import { sha256 } from '@noble/hashes/sha256';
+import * as secp from '@noble/secp256k1';
+import { derToJose, joseToDer } from 'ecdsa-sig-formatter';
+import { MissingParametersError } from '../errors';
+
+// required to use noble secp https://github.com/paulmillr/noble-secp256k1
+secp.utils.hmacSha256Sync = (key: Uint8Array, ...msgs: Uint8Array[]) => {
+  const h = hmac.create(sha256, key);
+  msgs.forEach(msg => h.update(msg));
+  return h.digest();
+};
 
 export class SECP256K1Client {
+  static algorithmName = 'ES256K';
 
-  static ec = new EC('secp256k1')
-  static algorithmName = 'ES256K'
-
-  constructor() {
+  static derivePublicKey(privateKey: string, compressed = true): string {
+    if (privateKey.length === 66) {
+      privateKey = privateKey.slice(0, 64);
+    }
+    if (privateKey.length < 64) {
+      // backward compatibly accept too short private keys
+      privateKey = privateKey.padStart(64, '0');
+    }
+    return Buffer.from(secp.getPublicKey(privateKey, compressed)).toString('hex');
   }
 
-  static loadPrivateKey(rawPrivateKey: string) {
-    if (rawPrivateKey.length === 66) {
-      rawPrivateKey = rawPrivateKey.slice(0, 64)
-    }
-    return SECP256K1Client.ec.keyFromPrivate(rawPrivateKey)
-  }
-
-  static loadPublicKey(rawPublicKey: string | Buffer) {
-    return SECP256K1Client.ec.keyFromPublic(rawPublicKey, 'hex')
-  }
-
-  static derivePublicKey(privateKey: string, compressed = true) {
-    if (typeof privateKey !== 'string') {
-      throw Error('private key must be a string')
-    }
-    if (!(/^[0-9A-F]+$/i.test(privateKey))) {
-      throw Error('private key must be a hex string')
-    }
-    if (privateKey.length == 66) {
-      privateKey = privateKey.slice(0, 64)
-    } else if (privateKey.length <= 64) {
-      // do nothing
-    } else {
-      throw Error('private key must be 66 characters or less')
-    }
-    const keypair = SECP256K1Client.ec.keyFromPrivate(privateKey)
-    return keypair.getPublic(compressed, 'hex')
-  }
-
-  static signHash(signingInputHash: string | Buffer, rawPrivateKey: string, format = 'jose') {
+  static signHash(signingInputHash: string | Buffer, privateKey: string, format = 'jose') {
     // make sure the required parameters are provided
-    if (!(signingInputHash && rawPrivateKey)) {
-      throw new MissingParametersError(
-        'a signing input hash and private key are all required')
+    if (!signingInputHash || !privateKey) {
+      throw new MissingParametersError('a signing input hash and private key are all required');
     }
-    // prepare the private key
-    const privateKeyObject = SECP256K1Client.loadPrivateKey(rawPrivateKey)
-    // calculate the signature
-    const signatureObject = privateKeyObject.sign(signingInputHash)
-    const derSignature = Buffer.from(signatureObject.toDER())
 
-    if (format === 'der') {
-      return derSignature.toString('hex')
-    } else if (format === 'jose') {
-      // return the JOSE-formatted signature
-      return derToJose(derSignature, 'ES256')
-    } else {
-      throw Error('Invalid signature format')
-    }
+    const derSignature = Buffer.from(
+      secp.signSync(signingInputHash, privateKey, { der: true, canonical: false })
+    );
+
+    if (format === 'der') return derSignature.toString('hex');
+    if (format === 'jose') return derToJose(derSignature, 'ES256');
+
+    throw Error('Invalid signature format');
   }
 
   static loadSignature(joseSignature: string | Buffer) {
     // create and return the DER-formatted signature buffer
-    return joseToDer(joseSignature, 'ES256')
+    return joseToDer(joseSignature, 'ES256');
   }
 
-  static verifyHash(signingInputHash: BNInput, derSignatureBuffer: string | Buffer, rawPublicKey: string | Buffer) {
+  static verifyHash(
+    signingInputHash: Buffer,
+    derSignatureBuffer: string | Buffer,
+    publicKey: string | Buffer
+  ) {
     // make sure the required parameters are provided
-    if (!(signingInputHash && derSignatureBuffer && rawPublicKey)) {
+    if (!signingInputHash || !derSignatureBuffer || !publicKey) {
       throw new MissingParametersError(
-        'a signing input hash, der signature, and public key are all required')
+        'a signing input hash, der signature, and public key are all required'
+      );
     }
-    // prepare the public key
-    const publicKeyObject = SECP256K1Client.loadPublicKey(rawPublicKey)
-    // verify the token
-    return publicKeyObject.verify(signingInputHash, derSignatureBuffer as any)
+
+    return secp.verify(derSignatureBuffer, signingInputHash, publicKey, { strict: false });
   }
 }
-

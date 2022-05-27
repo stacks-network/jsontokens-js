@@ -1,35 +1,22 @@
 {
+  "extends": "@stacks/eslint-config",
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": [
+    "@typescript-eslint"
+  ],
   "env": {
     "browser": true,
     "es6": true,
     "node": true
   },
   "rules": {
-    "comma-dangle": ["error", "never"],
-    "quotes": [2, "single"],
-    "eol-last": 2,
-    "no-debugger": 1,
-    "no-mixed-requires": 0,
-    "no-underscore-dangle": 0,
-    "no-multi-spaces": 0,
-    "no-trailing-spaces": 0,
-    "no-extra-boolean-cast": 0,
-    "no-undef": 2,
-    "@typescript-eslint/no-unused-vars": 2,
-    "no-var": 2,
-    "no-param-reassign": 0,
-    "no-else-return": 0,
-    "no-console": 0,
-    "prefer-const": 2,
-    "new-cap": 0,
-    "@typescript-eslint/camelcase": 2,
-    "brace-style": 2,
-    "semi": [2, "never"]
+    "@typescript-eslint/no-unsafe-assignment": 0,
+    "@typescript-eslint/no-unsafe-member-access": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/no-unsafe-call": 0
   }
 }
