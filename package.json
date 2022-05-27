@@ -93,6 +93,39 @@
     ]
   },
   "release": {
-    "extends": "./.github/releaserc.json"
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "npm ci"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": true
+        }
+      ],
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogTitle": "# Changelog\nAll notable changes to the project will be documented in this file."
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "message": "chore: release ${nextRelease.version}\n\n${nextRelease.notes}",
+          "assets": [
+            "**/*.{json,md}"
+          ]
+        }
+      ]
+    ]
   }
 }
