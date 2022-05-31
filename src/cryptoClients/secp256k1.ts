@@ -32,7 +32,7 @@ export class SECP256K1Client {
     }
 
     const derSignature = Buffer.from(
-      secp.signSync(signingInputHash, privateKey, { der: true, canonical: false })
+      secp.signSync(signingInputHash, privateKey.slice(0, 64), { der: true, canonical: false })
     );
 
     if (format === 'der') return derSignature.toString('hex');
