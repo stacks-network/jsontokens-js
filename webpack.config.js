@@ -20,7 +20,7 @@ module.exports = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
+      Buffer: ['buffer', 'Buffer']
     }),
   ],
   resolve: { extensions: ['.ts', '.js'] },
