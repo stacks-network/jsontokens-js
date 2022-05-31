@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to the project will be documented in this file.
 
+# [3.1.0](https://github.com/stacks-network/jsontokens-js/compare/v3.0.0...v3.1.0) (2022-05-31)
+
+
+### Features
+
+* replace crypto dependencies ([50bc8eb](https://github.com/stacks-network/jsontokens-js/commit/50bc8eba918e23adaaf2794d75d07f6b8635cffc))
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
