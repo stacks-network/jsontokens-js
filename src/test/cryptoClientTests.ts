@@ -50,4 +50,13 @@ function runSECP256k1Tests() {
     expect(typeof signature).toBe('string');
     expect(signature).toBe(referenceSignature);
   });
+
+  test('signHash returns an equal signature for uncompressed/compressed keys', async () => {
+    const message = 'Hello, world!';
+    const hash = await hashSha256Async(message);
+    const signatureCompressed = secp256k1.signHash(hash, privateKey2, 'der');
+    const signatureUncompressed = secp256k1.signHash(hash, privateKey.slice(0, 64), 'der');
+
+    expect(signatureCompressed).toBe(signatureUncompressed);
+  });
 }
