@@ -120,7 +120,7 @@
         {
           "message": "chore: release ${nextRelease.version}",
           "assets": [
-            "**/*.{json,md}"
+            "*.{json,md}"
           ]
         }
       ]
