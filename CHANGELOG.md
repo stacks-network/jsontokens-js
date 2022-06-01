@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to the project will be documented in this file.
 
+## [3.1.1](https://github.com/stacks-network/jsontokens-js/compare/v3.1.0...v3.1.1) (2022-06-01)
+
+
+### Bug Fixes
+
+* allow compressed private keys ([a7cfc6a](https://github.com/stacks-network/jsontokens-js/commit/a7cfc6ae833e661bfee51f6baf7490b3c41b14f5))
+
 # [3.1.0](https://github.com/stacks-network/jsontokens-js/compare/v3.0.0...v3.1.0) (2022-05-31)
 
 
