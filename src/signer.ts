@@ -90,7 +90,7 @@ export class TokenSigner {
     expanded: boolean,
     header: { typ: string; alg: string },
     signingInput: string,
-    signingInputHash: Buffer
+    signingInputHash: Uint8Array
   ): SignedToken | string {
     // sign the message and add in the signature
     const signature = this.cryptoClient.signHash(signingInputHash, this.rawPrivateKey);

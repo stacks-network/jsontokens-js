@@ -54,12 +54,12 @@ export class TokenVerifier {
     // calculate the signing input hash
     const signingInput = tokenParts[0] + '.' + tokenParts[1];
 
-    const performVerify = (signingInputHash: Buffer) => {
+    const performVerify = (signingInputHash: Uint8Array) => {
       // extract the signature as a DER array
-      const derSignatureBuffer = this.cryptoClient.loadSignature(tokenParts[2]);
+      const derSignatureBytes = this.cryptoClient.loadSignature(tokenParts[2]);
 
       // verify the signed hash
-      return this.cryptoClient.verifyHash(signingInputHash, derSignatureBuffer, this.rawPublicKey);
+      return this.cryptoClient.verifyHash(signingInputHash, derSignatureBytes, this.rawPublicKey);
     };
 
     if (async) {
@@ -78,12 +78,12 @@ export class TokenVerifier {
     const signingInput = [token['header'].join('.'), base64url.encode(token['payload'])].join('.');
     let verified = true;
 
-    const performVerify = (signingInputHash: Buffer) => {
+    const performVerify = (signingInputHash: Uint8Array) => {
       token['signature'].map((signature: string) => {
-        const derSignatureBuffer = this.cryptoClient.loadSignature(signature);
+        const derSignatureBytes = this.cryptoClient.loadSignature(signature);
         const signatureVerified = this.cryptoClient.verifyHash(
           signingInputHash,
-          derSignatureBuffer,
+          derSignatureBytes,
           this.rawPublicKey
         );
         if (!signatureVerified) {

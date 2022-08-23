@@ -46,10 +46,10 @@
   },
   "homepage": "https://github.com/stacks-network/jsontokens-js#readme",
   "dependencies": {
-    "@noble/hashes": "^1.0.0",
-    "@noble/secp256k1": "^1.5.5",
-    "base64url": "^3.0.1",
-    "ecdsa-sig-formatter": "^1.0.11"
+    "@noble/hashes": "^1.1.2",
+    "@noble/secp256k1": "^1.6.3",
+    "base64-js": "^1.5.1",
+    "base64url": "^3.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.17.10",
@@ -64,7 +64,6 @@
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "babel-loader": "^8.2.5",
-    "buffer": "^6.0.3",
     "codecov": "^3.8.3",
     "cross-env": "^6.0.3",
     "eslint": "^8.15.0",
