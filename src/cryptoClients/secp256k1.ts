@@ -1,8 +1,9 @@
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha256';
 import * as secp from '@noble/secp256k1';
-import { derToJose, joseToDer } from 'ecdsa-sig-formatter';
+import { derToJose, joseToDer } from '../ecdsaSigFormatter';
 import { MissingParametersError } from '../errors';
+import { bytesToHex } from '@noble/hashes/utils';
 
 // required to use noble secp https://github.com/paulmillr/noble-secp256k1
 secp.utils.hmacSha256Sync = (key: Uint8Array, ...msgs: Uint8Array[]) => {
@@ -22,42 +23,43 @@ export class SECP256K1Client {
       // backward compatibly accept too short private keys
       privateKey = privateKey.padStart(64, '0');
     }
-    return Buffer.from(secp.getPublicKey(privateKey, compressed)).toString('hex');
+    return bytesToHex(secp.getPublicKey(privateKey, compressed));
   }
 
-  static signHash(signingInputHash: string | Buffer, privateKey: string, format = 'jose') {
+  static signHash(signingInputHash: string | Uint8Array, privateKey: string, format = 'jose') {
     // make sure the required parameters are provided
     if (!signingInputHash || !privateKey) {
       throw new MissingParametersError('a signing input hash and private key are all required');
     }
 
-    const derSignature = Buffer.from(
-      secp.signSync(signingInputHash, privateKey.slice(0, 64), { der: true, canonical: false })
-    );
+    const derSignature = secp.signSync(signingInputHash, privateKey.slice(0, 64), {
+      der: true,
+      canonical: false,
+    });
 
-    if (format === 'der') return derSignature.toString('hex');
+    if (format === 'der') return bytesToHex(derSignature);
     if (format === 'jose') return derToJose(derSignature, 'ES256');
 
     throw Error('Invalid signature format');
   }
 
-  static loadSignature(joseSignature: string | Buffer) {
-    // create and return the DER-formatted signature buffer
+  static loadSignature(joseSignature: string | Uint8Array) {
+    // create and return the DER-formatted signature bytes
     return joseToDer(joseSignature, 'ES256');
   }
 
   static verifyHash(
-    signingInputHash: Buffer,
-    derSignatureBuffer: string | Buffer,
-    publicKey: string | Buffer
+    signingInputHash: Uint8Array,
+    derSignatureBytes: string | Uint8Array,
+    publicKey: string | Uint8Array
   ) {
     // make sure the required parameters are provided
-    if (!signingInputHash || !derSignatureBuffer || !publicKey) {
+    if (!signingInputHash || !derSignatureBytes || !publicKey) {
       throw new MissingParametersError(
         'a signing input hash, der signature, and public key are all required'
       );
     }
 
-    return secp.verify(derSignatureBuffer, signingInputHash, publicKey, { strict: false });
+    return secp.verify(derSignatureBytes, signingInputHash, publicKey, { strict: false });
   }
 }
