@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to the project will be documented in this file.
 
+# [4.0.0](https://github.com/stacks-network/jsontokens-js/compare/v3.1.1...v4.0.0) (2022-08-25)
+
+
+* feat!: remove buffer ([08856ac](https://github.com/stacks-network/jsontokens-js/commit/08856ac6c159943a101b690b7d9863f8ad06490d))
+
+
+### BREAKING CHANGES
+
+* Removes the `buffer` dependency and switches to the more modern Uint8Array
+
 ## [3.1.1](https://github.com/stacks-network/jsontokens-js/compare/v3.1.0...v3.1.1) (2022-06-01)
 
 
