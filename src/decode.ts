@@ -1,4 +1,4 @@
-import base64url from 'base64url';
+import * as base64url from './base64Url';
 
 export interface TokenInterface {
   header: {
