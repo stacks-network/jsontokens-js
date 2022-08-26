@@ -1,4 +1,4 @@
-import base64url from 'base64url';
+import * as base64url from './base64Url';
 import { cryptoClients, SECP256K1Client } from './cryptoClients';
 import { MissingParametersError } from './errors';
 import { SignedToken } from './signer';

@@ -15,7 +15,8 @@
 
 // The following code is adapted from https://github.com/Brightspace/node-ecdsa-sig-formatter
 
-import { fromByteArray, toByteArray, byteLength } from 'base64-js';
+import { fromByteArray, toByteArray } from 'base64-js';
+import { escape, pad } from './base64Url';
 
 function getParamSize(keySize: number): number {
   return ((keySize / 8) | 0) + (keySize % 8 === 0 ? 0 : 1);
@@ -46,19 +47,11 @@ const TAG_INT = 0x02;
 const ENCODED_TAG_SEQ = TAG_SEQ | PRIMITIVE_BIT | (CLASS_UNIVERSAL << 6);
 const ENCODED_TAG_INT = TAG_INT | (CLASS_UNIVERSAL << 6);
 
-function base64Url(base64: string): string {
-  return base64.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
-}
-
-function base64Pad(base64: string): string {
-  return `${base64}${'='.repeat(base64.length % 3)}`;
-}
-
 function signatureAsBytes(signature: string | Uint8Array) {
   if (signature instanceof Uint8Array) {
     return signature;
   } else if ('string' === typeof signature) {
-    return toByteArray(base64Pad(signature));
+    return toByteArray(pad(signature));
   }
 
   throw new TypeError('ECDSA signature must be a Base64 string or a Uint8Array');
@@ -151,7 +144,7 @@ export function derToJose(signature: string | Uint8Array, alg: Alg) {
   }
   dst.set(signatureBytes.subarray(sOffset + Math.max(-sPadding, 0), sOffset + sLength), offset);
 
-  return base64Url(fromByteArray(dst));
+  return escape(fromByteArray(dst));
 }
 
 function countPadding(buf: Uint8Array, start: number, stop: number) {
