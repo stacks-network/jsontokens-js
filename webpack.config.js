@@ -24,6 +24,6 @@ module.exports = {
     path: require('path').resolve(__dirname, 'dist'),
     library: 'jsontokens',
     libraryTarget: 'umd',
-    globalObject: 'this'
+    globalObject: 'this',
   },
 };
