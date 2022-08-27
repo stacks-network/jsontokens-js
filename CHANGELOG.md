@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to the project will be documented in this file.
 
+## [4.0.1](https://github.com/stacks-network/jsontokens-js/compare/v4.0.0...v4.0.1) (2022-08-27)
+
+
+### Bug Fixes
+
+* add base64url without buffer ([7dc8d53](https://github.com/stacks-network/jsontokens-js/commit/7dc8d531398b8ec01d0dcf2494edf8c825da1143))
+
 # [4.0.0](https://github.com/stacks-network/jsontokens-js/compare/v3.1.1...v4.0.0) (2022-08-25)
 
 
