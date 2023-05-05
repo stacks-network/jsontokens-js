@@ -3,22 +3,22 @@ import * as base64url from './base64Url';
 export interface TokenInterface {
   header: {
     [key: string]: Json;
-    alg?: string;
-    typ?: string;
+    alg: string | undefined;
+    typ: string | undefined;
   };
   payload:
     | {
         [key: string]: Json;
-        iss?: string;
-        jti?: string;
-        iat?: string | number;
-        exp?: string | number;
+        iss: string | undefined;
+        jti: string | undefined;
+        iat: string | number | undefined;
+        exp: string | number | undefined;
       }
     | string;
   signature: string;
 }
 
-export type Json = string | number | boolean | null | { [property: string]: Json } | Json[];
+export type Json = string | number | boolean | null | undefined | { [property: string]: Json } | Json[];
 
 export function decodeToken(token: string | TokenInterface): TokenInterface {
   if (typeof token === 'string') {
