@@ -2,13 +2,13 @@ import * as base64url from './base64Url';
 
 export interface TokenInterface {
   header: {
-    [key: string]: Json;
+    [key: string]: Json | undefined;
     alg?: string;
     typ?: string;
   };
   payload:
     | {
-        [key: string]: Json;
+        [key: string]: Json | undefined;
         iss?: string;
         jti?: string;
         iat?: string | number;
